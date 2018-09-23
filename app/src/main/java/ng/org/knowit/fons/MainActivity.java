@@ -1,5 +1,6 @@
 package ng.org.knowit.fons;
 
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,8 +41,11 @@ public class MainActivity extends AppCompatActivity {
         doInference.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                float prediction = doInference();
-                showResult.setText(Float.toString(prediction));
+
+                Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+                startActivity(intent);
+                //float prediction = doInference();
+                //showResult.setText(Float.toString(prediction));
             }
         });
     }

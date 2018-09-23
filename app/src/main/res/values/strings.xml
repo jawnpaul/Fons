@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Fons</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_home">Home</string>
+    <string name="title_all">All</string>
+    <string name="title_trending">Trending</string>
+    <string name="title_news">News</string>
 </resources>
