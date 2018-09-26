@@ -1,10 +1,18 @@
 package ng.org.knowit.fons.Fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import ng.org.knowit.fons.R;
 
@@ -26,6 +34,9 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    FragmentPagerAdapter adapterViewPager;
+
 
     //private OnFragmentInteractionListener mListener;
 
@@ -67,6 +78,43 @@ public class HomeFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        ViewPager vpPager = (ViewPager) view.findViewById(R.id.vpPager);
+        adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
+        vpPager.setAdapter(adapterViewPager);
+        insertNestedFragment();
+
+
+        vpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset,
+                    int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+               /* Toast.makeText(getContext(),
+                        "Selected page position: " + position, Toast.LENGTH_SHORT).show();*/
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    private void insertNestedFragment() {
+        OneDayFragment childFragment = new OneDayFragment();
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        //loadFragment(childFragment);
+        transaction.replace(R.id.frag, childFragment).commit();
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     /*public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -105,4 +153,81 @@ public class HomeFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }*/
+
+    public static class MyPagerAdapter extends FragmentPagerAdapter {
+        private static int NUM_ITEMS = 5;
+
+        public MyPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        // Returns total number of pages
+        @Override
+        public int getCount() {
+            return NUM_ITEMS;
+        }
+
+        // Returns the fragment to display for that page
+        @Override
+        public Fragment getItem(int position) {
+            OneDayFragment oneDayFragment = new OneDayFragment();
+            switch (position) {
+                case 0: // Fragment # 0 - This will show FirstFragment
+
+                    oneDayFragment = OneDayFragment.newInstance("Page zero",0);
+                    Bundle f_bundle = oneDayFragment.getArguments();
+                    String f_param1 = f_bundle.getString("param1");
+                    int f_param2 = f_bundle.getInt("param2");
+                   // Log.d("Home Fragment", f_param1 +" " + f_param2);
+                    //return OneDayFragment.newInstance("Page zero", 0);
+                    break;
+                case 1: // Fragment # 0 - This will show FirstFragment different title
+                    //Log.d("Home Fragment", "Second fragment has loaded");
+                    oneDayFragment = OneDayFragment.newInstance("Page one",1);
+                    //Bundle s_bundle = oneDayFragment.getArguments();
+                   // String s_param1 = s_bundle.getString("param1");
+                    //int s_param2 = s_bundle.getInt("param2");
+                  //  Log.d("Home Fragment", s_param1 +" " + s_param2);
+                    break;
+                    //return OneDayFragment.newInstance("Page one", 1);
+                case 2: // Fragment # 1 - This will show SecondFragment
+
+                    oneDayFragment = OneDayFragment.newInstance("Page Two", 2);
+                    //Log.d("Home Fragment", "Third fragment has loaded");
+                    break;
+                case 3:
+                    oneDayFragment = OneDayFragment.newInstance("Page Three", 3);
+                    break;
+                    //return OneDayFragment.newInstance("page two", 2);
+                case 4:
+                    oneDayFragment = OneDayFragment.newInstance("Page Four", 4);
+                    break;
+                default:
+                    Log.d("Home Fragment", "Which one? fragment has loaded");
+            }
+            return oneDayFragment;
+        }
+
+        // Returns the page title for the top indicator
+        @Override
+        public CharSequence getPageTitle(int position) {
+
+            //Write a switch statement here to show each tab title for specific tab I want
+
+            return "Page " + position;
+        }
+
+    }
+
+    private boolean loadFragment(OneDayFragment fragment) {
+        //switching fragment
+        if (fragment != null) {
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frag, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
+    }
 }

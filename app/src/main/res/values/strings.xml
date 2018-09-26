@@ -11,6 +11,23 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="random">Welcome to Java—the world’s most widely used computer programming language. You’re
+already familiar with the powerful tasks computers perform. Using this textbook, you’ll
+write instructions commanding computers to perform those kinds of tasks. Software (i.e.,
+the instructions you write) controls hardware (i.e., computers).
+You’ll learn object-oriented programming—today’s key programming methodology.
+You’ll create and work with many software objects in this text.
+Java is the preferred language for meeting many organizations’ enterprise program-
+ming needs. Java has also become the language of choice for implementing Internet-based
+applications and software for devices that communicate over a network.
+In use today are more than a billion general-purpose computers and billions more
+Java-enabled cell phones, smartphones and handheld devices (such as tablet computers).
+According to a study by eMarketer, the number of mobile Internet users will reach approx-
+imately 134 million by 2013. 1 Other studies have projected smartphone sales to surpass
+personal computer sales in 2011 2 and tablet sales to account for over 20% of all personal
+computer sales by 2015. 3 By 2014, the smartphone applications market is expected to
+exceed $40 billion, 4 which is creating significant opportunities for programming mobile
+applications.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
