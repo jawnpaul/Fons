@@ -25,12 +25,12 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
 
-            <!--<ImageView
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/ic_launcher"
-                app:layout_collapseMode="parallax" />-->
+                app:layout_collapseMode="parallax" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/vpPager"
@@ -51,7 +51,6 @@
 
 
             <android.support.v7.widget.Toolbar
-                android:background="@color/colorAccent"
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"

@@ -154,4 +154,19 @@ public class Main2Activity extends AppCompatActivity
         }
         return false;
     }
+
+    public void setToolbar(Toolbar toolbar) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if(toolbar != null) {
+            setSupportActionBar(toolbar);
+
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.setDrawerListener(toggle);
+            toggle.syncState();
+        } else {
+            drawer.setDrawerListener(null);
+        }
+    }
+
 }

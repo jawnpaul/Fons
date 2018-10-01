@@ -8,12 +8,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import ng.org.knowit.fons.Main2Activity;
 import ng.org.knowit.fons.R;
 
 
@@ -36,6 +38,8 @@ public class HomeFragment extends Fragment {
     private String mParam2;
 
     FragmentPagerAdapter adapterViewPager;
+
+    Toolbar toolbar;
 
 
     //private OnFragmentInteractionListener mListener;
@@ -79,7 +83,15 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        ((Main2Activity)getActivity()).setToolbar(toolbar);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        toolbar = view.findViewById(R.id.toolbar);
 
         ViewPager vpPager = (ViewPager) view.findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
