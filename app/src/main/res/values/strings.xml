@@ -11,6 +11,7 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="search">Search</string>
     <string name="random">Welcome to Java—the world’s most widely used computer programming language. You’re
 already familiar with the powerful tasks computers perform. Using this textbook, you’ll
 write instructions commanding computers to perform those kinds of tasks. Software (i.e.,

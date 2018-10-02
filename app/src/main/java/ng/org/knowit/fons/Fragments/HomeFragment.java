@@ -16,6 +16,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import ng.org.knowit.fons.Main2Activity;
@@ -40,10 +43,14 @@ public class HomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private String[] companyNames;
+
+    private int spinnerPosition;
     FragmentPagerAdapter adapterViewPager;
 
     Toolbar toolbar;
 
+    Spinner companySpinner;
 
     //private OnFragmentInteractionListener mListener;
 
@@ -76,13 +83,41 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        companyNames = getResources().getStringArray(R.array.company_names);
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        companySpinner = view.findViewById(R.id.spinner_toolbar);
+
+        ArrayAdapter<String> companyNamesAdapter = new ArrayAdapter<String>(getActivity(),  android.R.layout.simple_spinner_item, companyNames);
+        companyNamesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        companySpinner.setAdapter(companyNamesAdapter);
+
+        companySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+                selectedSpinner();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        return view;
+
     }
 
     @Override
@@ -122,6 +157,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
+
         final CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
 
         final PagerTabStrip pagerTabStrip = view.findViewById(R.id.pager_header);
@@ -157,6 +193,26 @@ public class HomeFragment extends Fragment {
         //loadFragment(childFragment);
         transaction.replace(R.id.frag, childFragment).commit();
     }
+
+    private void selectedSpinner(){
+        spinnerPosition = companySpinner.getSelectedItemPosition();
+        switch (spinnerPosition){
+            case 0:
+                Toast.makeText(getActivity(), "Microsoft leleyi oo", Toast.LENGTH_SHORT).show();
+                break;
+            case 1:
+                Toast.makeText(getActivity(), "Awa ti google ", Toast.LENGTH_SHORT).show();
+                Log.d("Home fragment", "Google Selected");
+                break;
+            case 2:
+                Toast.makeText(getActivity(), "We the Teslan", Toast.LENGTH_SHORT).show();
+                break;
+
+                default:
+                    break;
+        }
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     /*public void onButtonPressed(Uri uri) {

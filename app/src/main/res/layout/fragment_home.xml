@@ -60,11 +60,9 @@
 
 
                 <Spinner
-                    android:entries="@array/company_names"
                     android:id="@+id/spinner_toolbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-
                 </Spinner>
 
             </android.support.v7.widget.Toolbar>
@@ -87,6 +85,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
 
             <include layout="@layout/fragment_one_day"/>
 
