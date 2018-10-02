@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="company_names">
+        <item>Microsoft</item>
+        <item>Google</item>
+        <item>Tesla</item>
+        <item>Wal-mart</item>
+        <item>PZ industries</item>
+        <item>Apple</item>
+        <item>Goldman Sachs</item>
+    </string-array>
+</resources>

@@ -3,10 +3,13 @@ package ng.org.knowit.fons.Fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -115,6 +118,34 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        final CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
+
+        final PagerTabStrip pagerTabStrip = view.findViewById(R.id.pager_header);
+
+        AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                //Initialize the size of the scroll
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                //Check if the view is collapsed
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbarLayout.setTitle(" ");
+                    pagerTabStrip.setVisibility(View.INVISIBLE);
+
+                } else {
+                    collapsingToolbarLayout.setTitle(" ");
+                    pagerTabStrip.setVisibility(View.VISIBLE);
+                }
 
             }
         });
