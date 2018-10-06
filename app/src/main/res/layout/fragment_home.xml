@@ -1,110 +1,254 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragments.HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar_layout"
+
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".Fragments.HomeFragment">
 
-
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar_layout"
+        <!-- TODO: Update blank fragment layout -->
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
-            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
-            app:expandedTitleMarginStart="72dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
+            android:layout_height="260dp"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-            <!--<ImageView
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@mipmap/ic_launcher"
-                app:layout_collapseMode="parallax" />-->
+                app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+                app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+                app:expandedTitleMarginStart="72dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:toolbarId="@+id/toolbar">
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/vpPager"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <android.support.v4.view.PagerTabStrip
-                    android:id="@+id/pager_header"
+                <!--<ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:paddingBottom="4dp"
-                    android:paddingTop="4dp" />
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher"
+                    app:layout_collapseMode="parallax" />-->
 
-            </android.support.v4.view.ViewPager>
-
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:contentInsetStart="72dp"
-                app:navigationIcon="@drawable/ic_menu"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-
-                <Spinner
-                    android:id="@+id/spinner_toolbar"
-                    android:layout_width="wrap_content"
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/vpPager"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                </Spinner>
 
-            </android.support.v7.widget.Toolbar>
+                    <android.support.v4.view.PagerTabStrip
+                        android:id="@+id/pager_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp" />
 
-
-
-        </android.support.design.widget.CollapsingToolbarLayout>
-
-    </android.support.design.widget.AppBarLayout>
-
-
-    <android.support.v4.widget.NestedScrollView
-
-        android:layout_marginBottom="72dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                </android.support.v4.view.ViewPager>
 
 
-        <FrameLayout
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    app:contentInsetStart="72dp"
+                    app:navigationIcon="@drawable/ic_menu"
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+
+                    <Spinner
+                        android:id="@+id/spinner_toolbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                    </Spinner>
+
+                </android.support.v7.widget.Toolbar>
+
+
+
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+
+
+
+
+        <android.support.v4.widget.NestedScrollView
+
+            android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            app:layout_anchor="@+id/nestedScrollView"
+            app:layout_anchorGravity="top|center"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
-            <include layout="@layout/fragment_one_day"/>
+            <android.support.v7.widget.CardView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                card_view:cardCornerRadius="5dp"
+                android:elevation="5dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/random"
-                android:layout_margin="16dp"/>
-        </FrameLayout>
+                <ProgressBar
+                    android:visibility="invisible"
+                    android:id="@+id/home_progress_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
 
-    </android.support.v4.widget.NestedScrollView>
+                    <include layout="@layout/fragment_one_day" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="201dp">
 
-</android.support.design.widget.CoordinatorLayout>
+                        <TextView
+                            android:id="@+id/textViewStockPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:padding="0dp"
+                            android:text="@string/money"
+                            android:textAlignment="center"
+                            android:textAppearance="@android:style/TextAppearance.Material.Large"
+                            android:textSize="30sp"
+                            android:textStyle="bold"
+                            tools:targetApi="lollipop" />
+
+                        <TextView
+                            android:id="@+id/textViewPercentage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/textViewStockPrice"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/percentage_increase" />
+
+                        <LinearLayout
+                            android:padding="8dp"
+                            android:id="@+id/nameLinearLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginTop="70dp"
+                            android:orientation="horizontal"
+                            android:weightSum="100">
+
+                            <TextView
+                                android:id="@+id/textViewOpen"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="25"
+                                android:text="@string/open" />
+
+                            <TextView
+                                android:id="@+id/textViewHigh"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="25"
+                                android:text="High" />
+
+                            <TextView
+                                android:id="@+id/textViewLow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="25"
+                                android:text="Low" />
+
+                            <TextView
+                                android:id="@+id/textViewVolume"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="25"
+                                android:text="Volume" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:padding="8dp"
+                            android:layout_marginTop="20dp"
+                            android:weightSum="100"
+                            android:orientation="horizontal"
+                            android:layout_below="@id/nameLinearLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+
+                            <TextView
+                                android:id="@+id/textViewOpenPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="25"
+                                android:text="@string/price"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                tools:targetApi="lollipop" />
+
+                            <TextView
+                                android:id="@+id/textViewHighPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                               android:layout_weight="25"
+                                android:text="@string/price"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                tools:targetApi="lollipop"/>
+
+                            <TextView
+                                android:id="@+id/textViewLowPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                               android:layout_weight="25"
+                                android:text="@string/price"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                tools:targetApi="lollipop"/>
+
+                            <TextView
+                                android:id="@+id/textViewVolumeQuantity"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                               android:layout_weight="25"
+                                android:text="@string/volume_quantity"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                tools:targetApi="lollipop"/>
+
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
+
+                </FrameLayout>
+            </android.support.v7.widget.CardView>
+
+
+
+        </android.support.v4.widget.NestedScrollView>
+
+
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            app:srcCompat="@android:drawable/ic_dialog_email" />
+
+
+
+
+    </android.support.design.widget.CoordinatorLayout>

@@ -1,5 +1,8 @@
 package ng.org.knowit.fons.Fragments;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +14,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,11 +22,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+
 import ng.org.knowit.fons.Main2Activity;
+import ng.org.knowit.fons.Models.CompanyQuote;
+import ng.org.knowit.fons.Models.GlobalQuote;
 import ng.org.knowit.fons.R;
+import ng.org.knowit.fons.Rest.ApiClient;
+import ng.org.knowit.fons.Rest.ApiInterface;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -39,6 +57,17 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private static final String GLOBAL_QUOTE = "GLOBAL_QUOTE";
+    private static final String API_KEY = "FETXFXJ9VMMUJFE9";
+    private static final String MICROSOFT_SYMBOL = "MSFT";
+    private static final String GOOGLE_SYMBOL = "GOOGL";
+    private static final String TESLA_SYMBOL = "TSLA";
+    private static final String WALMART_SYMBOL = "WMT";
+    private static final String PZ_SYMBOL = "PZ";
+    private static final String APPLE_SYMBOL = "AAPL";
+    private static final String GOLDMAN_SYMBOL = "GS";
+    private static final String TAG1 = HomeFragment.class.getCanonicalName();
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -48,9 +77,18 @@ public class HomeFragment extends Fragment {
     private int spinnerPosition;
     FragmentPagerAdapter adapterViewPager;
 
+    Context mContext;
+
     Toolbar toolbar;
 
     Spinner companySpinner;
+
+    ProgressBar mProgressBar;
+
+    TextView priceTextView, openPriceTextView, highPriceTextView,
+            lowPriceTextView, volumeTextView, changePercentTextView;
+    String priceText, openPriceText, highPriceText, lowPriceText, volumeText, changePercentText;
+
 
     //private OnFragmentInteractionListener mListener;
 
@@ -85,7 +123,7 @@ public class HomeFragment extends Fragment {
         }
 
         companyNames = getResources().getStringArray(R.array.company_names);
-
+        mContext = getContext();
 
     }
 
@@ -94,9 +132,19 @@ public class HomeFragment extends Fragment {
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        priceTextView = view.findViewById(R.id.textViewStockPrice);
+        changePercentTextView = view.findViewById(R.id.textViewPercentage);
+        openPriceTextView = view.findViewById(R.id.textViewOpenPrice);
+        highPriceTextView = view.findViewById(R.id.textViewHighPrice);
+        lowPriceTextView = view.findViewById(R.id.textViewLowPrice);
+        volumeTextView = view.findViewById(R.id.textViewVolumeQuantity);
+
         companySpinner = view.findViewById(R.id.spinner_toolbar);
+
+        mProgressBar = view.findViewById(R.id.home_progress_bar);
 
         ArrayAdapter<String> companyNamesAdapter = new ArrayAdapter<String>(getActivity(),  android.R.layout.simple_spinner_item, companyNames);
         companyNamesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -198,14 +246,26 @@ public class HomeFragment extends Fragment {
         spinnerPosition = companySpinner.getSelectedItemPosition();
         switch (spinnerPosition){
             case 0:
-                Toast.makeText(getActivity(), "Microsoft leleyi oo", Toast.LENGTH_SHORT).show();
+                makeApiCall(MICROSOFT_SYMBOL);
                 break;
             case 1:
-                Toast.makeText(getActivity(), "Awa ti google ", Toast.LENGTH_SHORT).show();
-                Log.d("Home fragment", "Google Selected");
+                makeApiCall(GOOGLE_SYMBOL);
+
                 break;
             case 2:
-                Toast.makeText(getActivity(), "We the Teslan", Toast.LENGTH_SHORT).show();
+                makeApiCall(TESLA_SYMBOL);
+                break;
+            case 3:
+                makeApiCall(WALMART_SYMBOL);
+                break;
+            case 4:
+                makeApiCall(PZ_SYMBOL);
+                break;
+            case 5:
+                makeApiCall(APPLE_SYMBOL);
+                break;
+            case 6:
+                makeApiCall(GOLDMAN_SYMBOL);
                 break;
 
                 default:
@@ -329,4 +389,108 @@ public class HomeFragment extends Fragment {
         }
         return false;
     }
-}
+
+    private boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
+    public void displayMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(true);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.show();
+    }
+
+    public void makeApiCall(String Symbol){
+
+        if (!isOnline()) {
+
+            String title = "Connection";
+            String message = "No internet connection. Please try again.";
+            displayMessage(title, message);
+            }
+
+        mProgressBar.setVisibility(View.VISIBLE);
+
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+
+            Call<GlobalQuote> callToApi = apiInterface.getCompanyQuote(GLOBAL_QUOTE, Symbol, API_KEY);
+
+            callToApi.enqueue(new Callback<GlobalQuote>() {
+                @Override
+                public void onResponse(Call<GlobalQuote> call, Response<GlobalQuote> response) {
+                    GlobalQuote globalQuote = response.body();
+
+
+                    mProgressBar.setVisibility(View.INVISIBLE);
+
+                    if (globalQuote == null) {
+
+                        ResponseBody responseBody = response.errorBody();
+                        String errorTitle;
+                        String errorMessage;
+                        if (responseBody != null) {
+                            errorTitle = "Error";
+                            errorMessage = "An error occurred.";
+                        } else {
+                            errorTitle = "Error";
+                            errorMessage = "No data Received.";
+                        }
+                        displayMessage(errorTitle, errorMessage);
+                    } else {
+
+                        Log.e(TAG1, new Gson().toJson(globalQuote));
+
+                        priceText = globalQuote.getCompanyQuote().getCurrentPrice();
+                        changePercentText = globalQuote.getCompanyQuote().getChangePercent();
+                        openPriceText = globalQuote.getCompanyQuote().getOpenPrice();
+                        highPriceText = globalQuote.getCompanyQuote().getHighPrice();
+                        lowPriceText = globalQuote.getCompanyQuote().getLowPrice();
+                        volumeText = globalQuote.getCompanyQuote().getCurrentVolume();
+                        updateViews();
+
+
+                        //Toast.makeText(getActivity(), "Open price is "+ globalQuote.getCompanyQuote().getOpenPrice(), Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+
+
+
+                @Override
+                public void onFailure(Call<GlobalQuote> call, Throwable t) {
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    String errorTitle = "Error";
+                    String errorMessage = "Data request failed.";
+                    displayMessage(errorTitle, errorMessage);
+                }
+            });
+
+        }
+
+
+        public void updateViews(){
+            priceTextView.setText(priceText);
+            changePercentTextView.setText(changePercentText);
+            openPriceTextView.setText(openPriceText);
+            highPriceTextView.setText(highPriceText);
+            lowPriceTextView.setText(lowPriceText);
+            volumeTextView.setText(volumeText);
+
+
+        }
+
+    }
+
+
