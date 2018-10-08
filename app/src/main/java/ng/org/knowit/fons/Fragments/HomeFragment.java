@@ -1,7 +1,9 @@
 package ng.org.knowit.fons.Fragments;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,14 +27,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-
+import ng.org.knowit.fons.Data.CompanyContract;
+import ng.org.knowit.fons.Data.CompanyDbHelper;
+import ng.org.knowit.fons.Data.CompanyUpdateService;
 import ng.org.knowit.fons.Main2Activity;
-import ng.org.knowit.fons.Models.CompanyQuote;
 import ng.org.knowit.fons.Models.GlobalQuote;
 import ng.org.knowit.fons.R;
 import ng.org.knowit.fons.Rest.ApiClient;
@@ -74,6 +75,8 @@ public class HomeFragment extends Fragment {
 
     private String[] companyNames;
 
+    private SQLiteDatabase mSQLiteDatabase;
+
     private int spinnerPosition;
     FragmentPagerAdapter adapterViewPager;
 
@@ -87,7 +90,8 @@ public class HomeFragment extends Fragment {
 
     TextView priceTextView, openPriceTextView, highPriceTextView,
             lowPriceTextView, volumeTextView, changePercentTextView;
-    String priceText, openPriceText, highPriceText, lowPriceText, volumeText, changePercentText;
+    String priceText, openPriceText, highPriceText, lowPriceText, volumeText, changePercentText, symbolText,
+    latestTradingDayText, prevousDayCloseText, changeText;
 
 
     //private OnFragmentInteractionListener mListener;
@@ -124,6 +128,9 @@ public class HomeFragment extends Fragment {
 
         companyNames = getResources().getStringArray(R.array.company_names);
         mContext = getContext();
+
+        CompanyDbHelper dbHelper = new CompanyDbHelper(mContext);
+        mSQLiteDatabase = dbHelper.getWritableDatabase();
 
     }
 
@@ -273,46 +280,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
-    /*public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    *//**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     *//*
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }*/
-
     public static class MyPagerAdapter extends FragmentPagerAdapter {
         private static int NUM_ITEMS = 5;
 
@@ -458,7 +425,14 @@ public class HomeFragment extends Fragment {
                         highPriceText = globalQuote.getCompanyQuote().getHighPrice();
                         lowPriceText = globalQuote.getCompanyQuote().getLowPrice();
                         volumeText = globalQuote.getCompanyQuote().getCurrentVolume();
+                        changeText = globalQuote.getCompanyQuote().getChange();
+                        symbolText = globalQuote.getCompanyQuote().getCompanySymbol();
+                        latestTradingDayText = globalQuote.getCompanyQuote().getLatestTradingDay();
+                        prevousDayCloseText = globalQuote.getCompanyQuote().getPreviousClose();
                         updateViews();
+
+                        addNewCompany(symbolText, openPriceText, highPriceText, lowPriceText,
+                                priceText, volumeText, latestTradingDayText, prevousDayCloseText, changeText, changePercentText);
 
 
                         //Toast.makeText(getActivity(), "Open price is "+ globalQuote.getCompanyQuote().getOpenPrice(), Toast.LENGTH_LONG).show();
@@ -481,6 +455,12 @@ public class HomeFragment extends Fragment {
 
 
         public void updateViews(){
+        if (priceText.contains("-")){
+            changePercentTextView.setTextColor(getResources().getColor(R.color.colorAccent));
+            } else {
+            changePercentTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
+        }
+
             priceTextView.setText(priceText);
             changePercentTextView.setText(changePercentText);
             openPriceTextView.setText(openPriceText);
@@ -491,6 +471,27 @@ public class HomeFragment extends Fragment {
 
         }
 
+
+    private void addNewCompany(String companySymbol, String companyOpen,
+            String companyHigh, String companyLow, String companyPrice, String companyVolume,
+            String companyLatestTradingDay, String companyPreviousClose, String companyChange,
+            String companyChangePercent){
+        ContentValues cv = new ContentValues();
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_SYMBOL, companySymbol);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_OPEN, companyOpen);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_HIGH, companyHigh);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_LOW, companyLow);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_PRICE, companyPrice);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_VOLUME, companyVolume);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_LATEST_TRADING_DAY, companyLatestTradingDay);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_PREVIOUS_CLOSE, companyPreviousClose);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE, companyChange);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE_PERCENT, companyChangePercent);
+
+        CompanyUpdateService.insertNewCompany(mContext, cv);
+
     }
+
+}
 
 

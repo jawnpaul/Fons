@@ -23,6 +23,15 @@
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:name="ng.org.knowit.fons.Data.CompanyProvider"
+            android:authorities="ng.org.knowit.fons"
+            android:exported="false"/>
+
+        <service
+            android:name=".Data.CompanyUpdateService"
+            android:exported="false" />
     </application>
 
 </manifest>
