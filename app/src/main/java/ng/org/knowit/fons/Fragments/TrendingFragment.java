@@ -1,14 +1,22 @@
 package ng.org.knowit.fons.Fragments;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.Toolbar;
 
+import ng.org.knowit.fons.Adapters.AllCompanyAdapter;
+import ng.org.knowit.fons.Data.CompanyContract;
+import ng.org.knowit.fons.Data.CompanyDbHelper;
 import ng.org.knowit.fons.Main2Activity;
 import ng.org.knowit.fons.R;
 
@@ -30,7 +38,12 @@ public class TrendingFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    Toolbar toolbar;
+    private AllCompanyAdapter mAllCompanyAdapter;
+    private RecyclerView mRecyclerView;
+    private SQLiteDatabase mSQLiteDatabase;
+    private Toolbar toolbar;
+    private Context mContext;
+    private Cursor mCursor;
 
     //private OnFragmentInteractionListener mListener;
 
@@ -62,6 +75,10 @@ public class TrendingFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+
+            mContext = getContext();
+
+            if(mCursor!= null) mCursor.close();
         }
     }
 
@@ -69,12 +86,30 @@ public class TrendingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_trending, container, false);
+        View view = inflater.inflate(R.layout.fragment_trending, container, false);
+
+        mRecyclerView = view.findViewById(R.id.trendingCompanyRecyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        CompanyDbHelper dbHelper = new CompanyDbHelper(getActivity());
+        mSQLiteDatabase = dbHelper.getWritableDatabase();
+
+
+        if(mCursor!= null) mCursor.close();
+        mCursor = getTrendingCompany();
+
+
+
+        mAllCompanyAdapter = new AllCompanyAdapter(getActivity(), mCursor);
+
+        mRecyclerView.setAdapter(mAllCompanyAdapter);
+        return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        toolbar.setTitle("Trending");
         ((Main2Activity)getActivity()).setToolbar(toolbar);
     }
 
@@ -89,6 +124,16 @@ public class TrendingFragment extends Fragment {
         super.onDestroyView();
         ((Main2Activity)getActivity()).setToolbar(null);
         super.onDestroyView();
+    }
+
+    private Cursor getTrendingCompany() {
+        return mSQLiteDatabase.query(CompanyContract.CompanyEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE);
     }
 
 

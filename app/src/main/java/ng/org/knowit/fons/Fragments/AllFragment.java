@@ -44,8 +44,9 @@ public class AllFragment extends Fragment {
     private AllCompanyAdapter mAllCompanyAdapter;
     private RecyclerView mRecyclerView;
     private SQLiteDatabase mSQLiteDatabase;
-    Toolbar toolbar;
-    Context mContext;
+    private Toolbar toolbar;
+    private Context mContext;
+    private Cursor mCursor;
     //private OnFragmentInteractionListener mListener;
 
     public AllFragment() {
@@ -78,15 +79,8 @@ public class AllFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
             mContext = getContext();
 
-            CompanyDbHelper dbHelper = new CompanyDbHelper(getActivity());
-            mSQLiteDatabase = dbHelper.getWritableDatabase();
+            if(mCursor!= null) mCursor.close();
 
-
-            //Cursor cursor = getAllCompany();
-
-
-
-           // mAllCompanyAdapter = new AllCompanyAdapter(mContext, cursor);
 
         }
     }
@@ -104,18 +98,33 @@ public class AllFragment extends Fragment {
         mSQLiteDatabase = dbHelper.getWritableDatabase();
 
 
-        Cursor cursor = getAllCompany();
+        if(mCursor!= null) mCursor.close();
+        mCursor = getAllCompany();
 
 
-        mAllCompanyAdapter = new AllCompanyAdapter(getActivity(), cursor);
+
+        mAllCompanyAdapter = new AllCompanyAdapter(getActivity(), mCursor);
 
         mRecyclerView.setAdapter(mAllCompanyAdapter);
         return view;
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        mCursor.close();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mCursor.close();
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        toolbar.setTitle("All Companies");
         ((Main2Activity)getActivity()).setToolbar(toolbar);
     }
 
@@ -124,26 +133,14 @@ public class AllFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         toolbar = view.findViewById(R.id.toolbar);
 
-        //mRecyclerView = view.findViewById(R.id.allCompanyRecyclerView);
-        //mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        /*CompanyDbHelper dbHelper = new CompanyDbHelper(mContext);
-        mSQLiteDatabase = dbHelper.getWritableDatabase();
-
-
-        Cursor cursor = getAllCompany();*/
-
-
-        //mAllCompanyAdapter = new AllCompanyAdapter(mContext, cursor);
-
-        //mRecyclerView.setAdapter(mAllCompanyAdapter);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ((Main2Activity)getActivity()).setToolbar(null);
-        super.onDestroyView();
+        mCursor.close();
+
     }
 
 
