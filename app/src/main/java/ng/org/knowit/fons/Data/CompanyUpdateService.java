@@ -61,6 +61,7 @@ public class CompanyUpdateService extends IntentService {
     private void performInsert(ContentValues values) {
         if (getContentResolver().insert(CompanyContract.CONTENT_URI, values) != null) {
             Log.d(TAG, "Inserted new company");
+            Log.d(TAG, getContentResolver().insert(CompanyContract.CONTENT_URI, values).toString());
         } else {
             Log.w(TAG, "Error inserting new company");
         }

@@ -1,14 +1,22 @@
 package ng.org.knowit.fons.Fragments;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import ng.org.knowit.fons.Adapters.AllCompanyAdapter;
+import ng.org.knowit.fons.Data.CompanyContract;
+import ng.org.knowit.fons.Data.CompanyDbHelper;
 import ng.org.knowit.fons.Main2Activity;
 import ng.org.knowit.fons.R;
 
@@ -30,7 +38,14 @@ public class AllFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private static final String TAG = AllFragment.class.getCanonicalName();
+
+    private AllCompanyAdapter mAllCompanyAdapter;
+    private RecyclerView mRecyclerView;
+    private SQLiteDatabase mSQLiteDatabase;
     Toolbar toolbar;
+    Context mContext;
     //private OnFragmentInteractionListener mListener;
 
     public AllFragment() {
@@ -61,6 +76,18 @@ public class AllFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            mContext = getContext();
+
+            CompanyDbHelper dbHelper = new CompanyDbHelper(getActivity());
+            mSQLiteDatabase = dbHelper.getWritableDatabase();
+
+
+            //Cursor cursor = getAllCompany();
+
+
+
+           // mAllCompanyAdapter = new AllCompanyAdapter(mContext, cursor);
+
         }
     }
 
@@ -68,7 +95,22 @@ public class AllFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_all, container, false);
+        View view = inflater.inflate(R.layout.fragment_all, container, false);
+
+        mRecyclerView = view.findViewById(R.id.allCompanyRecyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        CompanyDbHelper dbHelper = new CompanyDbHelper(getActivity());
+        mSQLiteDatabase = dbHelper.getWritableDatabase();
+
+
+        Cursor cursor = getAllCompany();
+
+
+        mAllCompanyAdapter = new AllCompanyAdapter(getActivity(), cursor);
+
+        mRecyclerView.setAdapter(mAllCompanyAdapter);
+        return view;
     }
 
     @Override
@@ -81,6 +123,20 @@ public class AllFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         toolbar = view.findViewById(R.id.toolbar);
+
+        //mRecyclerView = view.findViewById(R.id.allCompanyRecyclerView);
+        //mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        /*CompanyDbHelper dbHelper = new CompanyDbHelper(mContext);
+        mSQLiteDatabase = dbHelper.getWritableDatabase();
+
+
+        Cursor cursor = getAllCompany();*/
+
+
+        //mAllCompanyAdapter = new AllCompanyAdapter(mContext, cursor);
+
+        //mRecyclerView.setAdapter(mAllCompanyAdapter);
     }
 
     @Override
@@ -88,6 +144,17 @@ public class AllFragment extends Fragment {
         super.onDestroyView();
         ((Main2Activity)getActivity()).setToolbar(null);
         super.onDestroyView();
+    }
+
+
+    private Cursor getAllCompany() {
+        return mSQLiteDatabase.query(CompanyContract.CompanyEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                CompanyContract.CompanyEntry.COLUMN_TIMESTAMP);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

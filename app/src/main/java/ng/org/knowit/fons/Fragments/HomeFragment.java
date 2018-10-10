@@ -3,8 +3,10 @@ package ng.org.knowit.fons.Fragments;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +32,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import ng.org.knowit.fons.Adapters.CompanyAdapter;
 import ng.org.knowit.fons.Data.CompanyContract;
 import ng.org.knowit.fons.Data.CompanyDbHelper;
 import ng.org.knowit.fons.Data.CompanyUpdateService;
@@ -79,6 +82,10 @@ public class HomeFragment extends Fragment {
 
     private int spinnerPosition;
     FragmentPagerAdapter adapterViewPager;
+
+    CompanyAdapter mCompanyAdapter;
+
+    private Cursor mCursor;
 
     Context mContext;
 
@@ -131,6 +138,9 @@ public class HomeFragment extends Fragment {
 
         CompanyDbHelper dbHelper = new CompanyDbHelper(mContext);
         mSQLiteDatabase = dbHelper.getWritableDatabase();
+
+        mCursor = getSpecificCompany();
+        mCompanyAdapter = new CompanyAdapter(mContext, mCursor);
 
     }
 
@@ -253,26 +263,26 @@ public class HomeFragment extends Fragment {
         spinnerPosition = companySpinner.getSelectedItemPosition();
         switch (spinnerPosition){
             case 0:
-                makeApiCall(MICROSOFT_SYMBOL);
+                //makeApiCall(MICROSOFT_SYMBOL);
                 break;
             case 1:
-                makeApiCall(GOOGLE_SYMBOL);
+                //makeApiCall(GOOGLE_SYMBOL);
 
                 break;
             case 2:
-                makeApiCall(TESLA_SYMBOL);
+                //makeApiCall(TESLA_SYMBOL);
                 break;
             case 3:
-                makeApiCall(WALMART_SYMBOL);
+                //makeApiCall(WALMART_SYMBOL);
                 break;
             case 4:
-                makeApiCall(PZ_SYMBOL);
+               // makeApiCall(PZ_SYMBOL);
                 break;
             case 5:
-                makeApiCall(APPLE_SYMBOL);
+              //  makeApiCall(APPLE_SYMBOL);
                 break;
             case 6:
-                makeApiCall(GOLDMAN_SYMBOL);
+              //  makeApiCall(GOLDMAN_SYMBOL);
                 break;
 
                 default:
@@ -490,8 +500,41 @@ public class HomeFragment extends Fragment {
 
         CompanyUpdateService.insertNewCompany(mContext, cv);
 
+        mCompanyAdapter.swappCursor(mCursor);
     }
 
+    private void updateCompany(String companySymbol, String companyOpen,
+            String companyHigh, String companyLow, String companyPrice, String companyVolume,
+            String companyLatestTradingDay, String companyPreviousClose, String companyChange,
+            String companyChangePercent){
+        ContentValues cv = new ContentValues();
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_SYMBOL, companySymbol);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_OPEN, companyOpen);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_HIGH, companyHigh);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_LOW, companyLow);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_PRICE, companyPrice);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_VOLUME, companyVolume);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_LATEST_TRADING_DAY, companyLatestTradingDay);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_PREVIOUS_CLOSE, companyPreviousClose);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE, companyChange);
+        cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE_PERCENT, companyChangePercent);
+
+        //CompanyUpdateService.updateCompany(mContext, CompanyContract.getColumnLong(null, null));
+    }
+
+    private Cursor getSpecificCompany(){
+       /* String id = "1";
+
+        Uri uri = CompanyContract.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(id).build();*/
+
+        Log.d(TAG1, CompanyContract.buildSingleCompany(6).toString());
+        return mContext.getContentResolver().query(CompanyContract.buildSingleCompany(6),
+                null,
+                null,
+                null,
+                CompanyContract.CompanyEntry._ID);
+    }
 }
 
 

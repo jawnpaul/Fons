@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        card_view:cardCornerRadius="5dp"
+        android:elevation="5dp">
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textViewStockPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:padding="0dp"
+                    android:text="@string/money"
+                    android:textAlignment="center"
+                    android:textAppearance="@android:style/TextAppearance.Material.Large"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    tools:targetApi="lollipop" />
+
+                <TextView
+                    android:id="@+id/textViewPercentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textViewStockPrice"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/percentage_increase" />
+
+                <LinearLayout
+                    android:padding="8dp"
+                    android:id="@+id/nameLinearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="70dp"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:id="@+id/textViewOpen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:text="@string/open" />
+
+                    <TextView
+                        android:id="@+id/textViewHigh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:text="High" />
+
+                    <TextView
+                        android:id="@+id/textViewLow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:text="Low" />
+
+                    <TextView
+                        android:id="@+id/textViewVolume"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:text="Volume" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:padding="8dp"
+                    android:layout_marginTop="20dp"
+                    android:weightSum="100"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/nameLinearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        android:id="@+id/textViewOpenPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:text="@string/price"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        tools:targetApi="lollipop" />
+
+                    <TextView
+                        android:id="@+id/textViewHighPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:text="@string/price"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        tools:targetApi="lollipop"/>
+
+                    <TextView
+                        android:id="@+id/textViewLowPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:text="@string/price"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        tools:targetApi="lollipop"/>
+
+                    <TextView
+                        android:id="@+id/textViewVolumeQuantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="25"
+                        android:text="@string/volume_quantity"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        tools:targetApi="lollipop"/>
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

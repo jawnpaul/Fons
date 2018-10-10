@@ -31,7 +31,7 @@ public class CompanyContract {
     public static final Uri CONTENT_URI =
             BASE_CONTENT_URI.buildUpon().appendPath(CompanyEntry.TABLE_NAME).build();
 
-    public static Uri buildDetailActivity(long id) {
+    public static Uri buildSingleCompany(long id) {
         return CONTENT_URI.buildUpon()
                 .appendPath(Long.toString(id))
                 .build();
