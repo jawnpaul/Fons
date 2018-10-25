@@ -1,0 +1,136 @@
+{
+  "status": "ok",
+  "totalResults": 10,
+  "articles": [
+    {
+      "source": {
+        "id": "business-insider",
+        "name": "Business Insider"
+      },
+      "author": "Gina Heeb",
+      "title": "The Dow tumbles more than 300 points",
+      "description": "The Dow tumbles more than 300 points",
+      "url": "https://markets.businessinsider.com/news/stocks/stock-market-news-dow-tumbles-more-than-300-points-2018-10-1027605643",
+      "urlToImage": "https://static6.businessinsider.com/image/54109f116bb3f73c2b304035-2400/120340442.jpg",
+      "publishedAt": "2018-10-10T17:06:07Z",
+      "content": "Mario Tama/Getty Images Stocks fell Wednesday as concerns about global economic growth and ongoing trade tensions continued to hang over Wall Street and after the bond market resumed a sell-off that started last week. The Dow Jones industrial average tumbled … [+1805 chars]"
+    },
+    {
+      "source": {
+        "id": "business-insider",
+        "name": "Business Insider"
+      },
+      "author": "Kevin Loria",
+      "title": "Hurricane Michael just made landfall as the strongest storm to hit the US in 50 years — more intense than Hurricanes Andrew or Katrina",
+      "description": "Hurricane Michael just made landfall as the third strongest hurricane to ever hit the US and the strongest storm in 50 years. Michael's minimum central pressure — a key measure of hurricane strength — was measured at 919 millibars at 1:00 p.m. ET Wednesday.",
+      "url": "https://www.businessinsider.com/hurricane-michael-strongest-storm-in-50-years-2018-10",
+      "urlToImage": "https://amp.businessinsider.com/images/5bbe314aac0a633f3e682068-1920-960.jpg",
+      "publishedAt": "2018-10-10T00:00:00Z",
+      "content": "Hurricane Michael has made landfall near Mexico Beach, Florida. The storm picked up steam as it sped across the Gulf of Mexico towards the Florida Panhandle. When its eye hit Florida's Gulf Coast on Wednesday afternoon, the storm had sustained winds of 155 mp… [+1551 chars]"
+    },
+    {
+      "source": {
+        "id": "business-insider",
+        "name": "Business Insider"
+      },
+      "author": "Lydia Ramsey",
+      "title": "2 massive healthcare deals just got approved by the DOJ — and they will change healthcare as we know it",
+      "description": "BI PRIME: Cigna + Express Scripts. Aetna + CVS Health. The mega-deals, once officially closed, will redraw the healthcare industry as we know it,  giving health plans a lot more control over who's paying for prescription drugs.",
+      "url": "https://www.businessinsider.com/cvs-aetna-cigna-express-scripts-deals-pass-doj-2018-10",
+      "urlToImage": "https://amp.businessinsider.com/images/5abe9fc5479e621c008b46b1-2732-1366.jpg",
+      "publishedAt": "2018-10-10T00:00:00Z",
+      "content": "The US Department of Justice has now cleared two healthcare megamergers, after CVS Health and Aetna's $69 billion merger got the green light from the agency on Wednesday. In September, the agency also cleared Cigna's $67 billion merger with Express Scripts. T… [+3092 chars]"
+    },
+    {
+      "source": {
+        "id": "business-insider",
+        "name": "Business Insider"
+      },
+      "author": "Troy Wolverton",
+      "title": "Tech gets demolished: The 5 hottest tech stocks just lost $172 billion in market value",
+      "description": "Shares of tech's Big Five — Facebook, Apple, Amazon, Netflix, and Google — took a big hit on Wednesday amid a broader selloff.",
+      "url": "https://www.businessinsider.com/shares-of-apple-facebook-google-netflix-and-amazon-lost-172-billion-market-value-2018-10",
+      "urlToImage": "https://amp.businessinsider.com/images/5bbe870f93032c47b31146fb-2732-1366.jpg",
+      "publishedAt": "2018-10-10T00:00:00Z",
+      "content": "The stock market took a big bite out of the FAANGs on Wednesday. Collectively, the Big Five tech firms — Facebook, Apple, Amazon, Netflix, and Google — lost $172 billion in value over the span of a few hours on Wednesday, amid a broad slump in the market. Tha… [+1221 chars]"
+    },
+    {
+      "source": {
+        "id": "business-insider",
+        "name": "Business Insider"
+      },
+      "author": "Rob Price",
+      "title": "A Google linked exec and a former US politician have dropped out of a Saudi project after journalist's disappearance",
+      "description": "19 high-profile tech and business figures were named to an advisory board for a $500 billion Saudi Arabian megacity project — but now they're trying to distance themselves.",
+      "url": "https://www.businessinsider.com/dan-doctoroff-ernest-moriz-drop-out-saudi-arabia-neom-board-2018-10",
+      "urlToImage": "https://amp.businessinsider.com/images/5bbe77349fb84c4818426dbb-1136-568.jpg",
+      "publishedAt": "2018-10-10T00:00:00Z",
+      "content": "A senior executive who works for Google's parent company and a former US secretary of energy have dropped out of a Saudi Arabia tech and business advisory board following international outcry over the disappearance and alleged murder of a dissident Saudi jour… [+4566 chars]"
+    },
+    {
+      "source": {
+        "id": "business-insider",
+        "name": "Business Insider"
+      },
+      "author": "Andy Kiersz",
+      "title": "Here are the biggest one-day point drops in the Dow's history",
+      "description": "Stocks tumbled — here's how the carnage compares to the worst days for the Dow in history.",
+      "url": "https://www.businessinsider.com/largest-stock-market-drops-in-history-2018-2",
+      "urlToImage": "https://amp.businessinsider.com/images/595576bbd084cc28008b69cb-750-375.jpg",
+      "publishedAt": "2018-10-10T00:00:00Z",
+      "content": "The stock market took a tumble Wednesday amid fears surrounding global growth, rising interest rates, and trade disputes. The Dow closed down 831.83 points, the third-largest one-day point drop in its history. The biggest one-day point drop came earlier this … [+776 chars]"
+    },
+    {
+      "source": {
+        "id": "business-insider",
+        "name": "Business Insider"
+      },
+      "author": "Zoë Bernard",
+      "title": "Walmart looked at buying buzzy luggage brand Away — and it could be part of its plan to become the Netflix of retail",
+      "description": "BI PRIME: Known typically as a low-cost retailer, Walmart is now seeking to appeal to a higher-end, urban shopper where it'll compete with Amazon. To do so, it's made a number of acquisitions in the last several years.",
+      "url": "https://www.businessinsider.com/walmart-has-looked-at-acquiring-luggage-company-away-2018-10",
+      "urlToImage": "https://amp.businessinsider.com/images/5bbcceea76545320aa6bb0c9-960-480.jpg",
+      "publishedAt": "2018-10-10T00:00:00Z",
+      "content": "Walmart looked at acquiring luggage maker Away and held several meetings with the startup, Business Insider has learned. It's unclear if the talks are still ongoing. Known typically as a low-cost retailer, Walmart is now seeking to appeal to a higher-end, urb… [+2008 chars]"
+    },
+    {
+      "source": {
+        "id": "business-insider",
+        "name": "Business Insider"
+      },
+      "author": "Hayley Peterson",
+      "title": "Decaying stores, plunging sales, and a remote CEO: How Sears was driven to the edge of bankruptcy",
+      "description": "Sears CEO Eddie Lampert has blamed the company's decline on the media, shifts in consumer spending, and the rise of e-commerce, among other reasons. But analysts and critics say the company's demise is the result of years of under-investments in stores.",
+      "url": "https://www.businessinsider.com/why-sears-is-near-bankruptcy-and-closing-stores-2018-10",
+      "urlToImage": "https://amp.businessinsider.com/images/5bbe674298a18047ca268155-2732-1366.jpg",
+      "publishedAt": "2018-10-10T00:00:00Z",
+      "content": "Sears has survived two world wars and the Great Depression. But after a little more than a decade under the control of a former Goldman Sachs executive turned hedge fund manager, the 125-year-old retailer is imploding. Sales have fallen by half since 2014, an… [+3544 chars]"
+    },
+    {
+      "source": {
+        "id": "business-insider",
+        "name": "Business Insider"
+      },
+      "author": "John Haltiwanger",
+      "title": "Trump has reportedly tried to fire John Kelly, but fails because he usually uses Kelly to fire people",
+      "description": "President Donald Trump has reportedly attempted to fire White House chief of staff John Kelly, but has apparently failed because he typically uses Kelly as a means of ousting people from his administration and didn't know who else to ask.",
+      "url": "https://www.businessinsider.com/trump-tried-to-fire-john-kelly-but-kelly-ignored-him-report-says-2018-10",
+      "urlToImage": "https://amp.businessinsider.com/images/5bbe73e998a18048ff7b33d9-1920-960.jpg",
+      "publishedAt": "2018-10-10T00:00:00Z",
+      "content": "President Donald Trump has reportedly attempted to fire White House chief of staff John Kelly, but has apparently failed because he typically uses Kelly to oust other people from his administration and didn't know who else to ask. New York Magazine reporter O… [+1726 chars]"
+    },
+    {
+      "source": {
+        "id": "business-insider",
+        "name": "Business Insider"
+      },
+      "author": "Clancy Morgan",
+      "title": "Google's Pixel 3 event in 6 minutes",
+      "description": "At its October 2018 event, Google showed off new phones and other devices. The search giant debuted the new Pixel 3 and Pixel 3 XL, the Google Home Hub, and the Pixel Slate. The devices will all be available later this year.",
+      "url": "https://www.businessinsider.com/google-pixel-3-xl-home-hub-slate-event-2018-10",
+      "urlToImage": "https://amp.businessinsider.com/images/5bbce93c2e7129260e40c5a8-1536-768.jpg",
+      "publishedAt": "2018-10-09T00:00:00Z",
+      "content": "At its October 2018 event, Google showed off new phones and other devices. The search giant debuted the new Pixel 3 and Pixel 3 XL, the Google Home Hub, and the Pixel Slate. The devices will all be available later this year."
+    }
+  ]
+}

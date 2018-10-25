@@ -77,7 +77,7 @@ public class NewsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        toolbar.setTitle("News");
+        toolbar.setTitle("News ");
         ((Main2Activity)getActivity()).setToolbar(toolbar);
     }
 
