@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -400,7 +399,7 @@ public class HomeFragment extends Fragment {
 
         mProgressBar.setVisibility(View.VISIBLE);
 
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface apiInterface = ApiClient.getStockClient().create(ApiInterface.class);
 
             Call<GlobalQuote> callToApi = apiInterface.getCompanyQuote(GLOBAL_QUOTE, Symbol, API_KEY);
 

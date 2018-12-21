@@ -1,17 +1,31 @@
 package ng.org.knowit.fons.Fragments;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+
+import com.google.gson.Gson;
 
 import ng.org.knowit.fons.Main2Activity;
+import ng.org.knowit.fons.Models.NewsQuote;
 import ng.org.knowit.fons.R;
+import ng.org.knowit.fons.Rest.ApiClient;
+import ng.org.knowit.fons.Rest.ApiInterface;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -27,12 +41,17 @@ public class NewsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = NewsFragment.class.getCanonicalName();
+    private static final String BUSINESS_INSIDER = "business-insider";
+    private static final String API_KEY = "e3345a05e8814c36ba5d8939f12c1604";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     Toolbar toolbar;
+    Context mContext;
+    ProgressBar mProgressBar;
 
     //private OnFragmentInteractionListener mListener;
 
@@ -64,14 +83,22 @@ public class NewsFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
+
+        mContext = getContext();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_news, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_news, container, false);
+        mProgressBar = view.findViewById(R.id.news_progress_bar);
+
+
+    return view;
     }
 
     @Override
@@ -85,7 +112,88 @@ public class NewsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         toolbar = view.findViewById(R.id.toolbar);
+        makeApiCall();
         Log.d("News Fragment", "Toolbar created");
+
+    }
+
+
+    public void makeApiCall(){
+
+        if (!isOnline()) {
+
+            String title = "Connection";
+            String message = "No internet connection. Please try again.";
+            displayMessage(title, message);
+        }
+
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        ApiInterface apiInterface = ApiClient.getNewsClient().create(ApiInterface.class);
+
+        Call<NewsQuote> callToApi = apiInterface.getNewsQuote(BUSINESS_INSIDER, API_KEY);
+
+        callToApi.enqueue(new Callback<NewsQuote>() {
+            @Override
+            public void onResponse(Call<NewsQuote> call, Response<NewsQuote> response) {
+                NewsQuote newsQuote = response.body();
+
+
+                mProgressBar.setVisibility(View.INVISIBLE);
+
+                if (newsQuote == null) {
+
+                    ResponseBody responseBody = response.errorBody();
+                    String errorTitle;
+                    String errorMessage;
+                    if (responseBody != null) {
+                        errorTitle = "Error";
+                        errorMessage = "An error occurred.";
+                    } else {
+                        errorTitle = "Error";
+                        errorMessage = "No data Received.";
+                    }
+                    displayMessage(errorTitle, errorMessage);
+                } else {
+
+                    Log.e(TAG, new Gson().toJson(newsQuote));
+
+                }
+            }
+
+
+
+            @Override
+            public void onFailure(Call<NewsQuote> call, Throwable t) {
+                mProgressBar.setVisibility(View.INVISIBLE);
+                String errorTitle = "Error";
+                String errorMessage = "Data request failed.";
+                displayMessage(errorTitle, errorMessage);
+            }
+        });
+
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
+    public void displayMessage(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(true);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.show();
     }
 
     // TODO: Rename method, update argument and hook method into UI event

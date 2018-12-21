@@ -7,8 +7,12 @@ public class ApiClient {
 
 
     private static final String ALPHAVANTAGE_BASE_URL = "https://www.alphavantage.co/";
-    private static Retrofit.Builder retrofitBuilder = null;
-    private static Retrofit retrofit;
+    private static final String NEWS_BASE_URL = "https://newsapi.org/v2/";
+    private static Retrofit.Builder stockRetrofitBuilder = null;
+    private static Retrofit.Builder newsRetrofitBuilder = null;
+    private static Retrofit stockRetrofit;
+    private static Retrofit newsRetrofit;
+
 
 
     /**
@@ -21,17 +25,31 @@ public class ApiClient {
      *
      * @return Retrofit object
      */
-    public static Retrofit getClient(){
+    public static Retrofit getStockClient(){
 
-        if(retrofit == null) {
+        if(stockRetrofit == null) {
             //initializing the Retrofit builder, adding the base url and Converter to use
-            retrofitBuilder = new Retrofit.Builder();
-            retrofitBuilder.baseUrl(ALPHAVANTAGE_BASE_URL);
-            retrofitBuilder.addConverterFactory(GsonConverterFactory.create());
-            retrofit = retrofitBuilder.build();
+            stockRetrofitBuilder = new Retrofit.Builder();
+            stockRetrofitBuilder.baseUrl(ALPHAVANTAGE_BASE_URL);
+            stockRetrofitBuilder.addConverterFactory(GsonConverterFactory.create());
+            stockRetrofit = stockRetrofitBuilder.build();
 
         }
-        return retrofit;
+        return stockRetrofit;
+
+    }
+
+    public static Retrofit getNewsClient(){
+
+        if(newsRetrofit == null) {
+            //initializing the Retrofit builder, adding the base url and Converter to use
+            newsRetrofitBuilder = new Retrofit.Builder();
+            newsRetrofitBuilder.baseUrl(NEWS_BASE_URL);
+            newsRetrofitBuilder.addConverterFactory(GsonConverterFactory.create());
+            newsRetrofit = newsRetrofitBuilder.build();
+
+        }
+        return newsRetrofit;
 
     }
 }
