@@ -6,10 +6,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonArray;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ng.org.knowit.fons.Models.NewsItem;
 import ng.org.knowit.fons.R;
@@ -18,12 +23,18 @@ import ng.org.knowit.fons.R;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
 
-    private final Context mContext;
-    private final JsonArray newsItems;
+    Context mContext;
+    ArrayList<NewsItem> mNewsItems;
+    private final OnListItemClickListener mOnListItemClickListener;
 
-    public NewsAdapter(Context context, JsonArray NewsItems) {
-        this.newsItems = NewsItems;
+    public NewsAdapter(Context context, ArrayList<NewsItem> NewsItems, OnListItemClickListener onListItemClickListener) {
         this.mContext = context;
+        this.mNewsItems = NewsItems;
+        this.mOnListItemClickListener = onListItemClickListener;
+    }
+
+    public interface OnListItemClickListener {
+        void onListItemClick(int position);
     }
 
     @NonNull
@@ -37,18 +48,17 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     @Override
     public void onBindViewHolder(@NonNull NewsViewHolder holder, int position) {
 
-
-        //holder.titleTextView.setText(newsItems.get(position).);
+        holder.bind(position);
 
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mNewsItems.size();
     }
 
 
-    class NewsViewHolder extends RecyclerView.ViewHolder{
+    class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         final TextView authorTextView, titleTextView;
                 /*, descriptionTextView,
                 urlToImageTextView, publishedAtTextView, contentTextView;*/
@@ -62,10 +72,24 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             /*lowPriceTextView = itemView.findViewById(R.id.textViewLowPrice);
             volumeTextView = itemView.findViewById(R.id.textViewVolumeQuantity);
             changePercentTextView = itemView.findViewById(R.id.textViewPercentage);*/
+
+            itemView.setOnClickListener(this);
         }
 
         public void bind(int position){
-            //NewsItem newsItem = (NewsItem) newsItems.get(position);
+            NewsItem newsItem = mNewsItems.get(position);
+
+            authorTextView.setText(newsItem.getAuthor());
+            titleTextView.setText(newsItem.getTitle());
+
+            String imageUrl = newsItem.getUrlToImage();
+            Glide.with(mContext).load(imageUrl).into(newsImageView);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            mOnListItemClickListener.onListItemClick(position);
         }
     }
 }

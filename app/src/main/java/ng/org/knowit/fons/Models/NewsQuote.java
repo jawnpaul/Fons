@@ -16,7 +16,7 @@ public class NewsQuote {
     @Expose
     private ArrayList<NewsItem> results = null;
 
-    public List<NewsItem> getResults() {
+    public ArrayList<NewsItem> getResults() {
         return results;
     }
 

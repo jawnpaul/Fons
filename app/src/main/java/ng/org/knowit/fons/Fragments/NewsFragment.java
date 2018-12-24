@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +19,9 @@ import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+
+import ng.org.knowit.fons.Adapters.NewsAdapter;
 import ng.org.knowit.fons.Main2Activity;
 import ng.org.knowit.fons.Models.NewsItem;
 import ng.org.knowit.fons.Models.NewsQuote;
@@ -37,7 +42,7 @@ import retrofit2.Response;
  * Use the {@link NewsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NewsFragment extends Fragment {
+public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -50,9 +55,14 @@ public class NewsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private RecyclerView mRecyclerView;
+    private Context mContext;
+    private NewsAdapter mNewsAdapter;
+
+
     Toolbar toolbar;
-    Context mContext;
     ProgressBar mProgressBar;
+    ArrayList<NewsItem> mNewsItems;
 
     //private OnFragmentInteractionListener mListener;
 
@@ -84,10 +94,10 @@ public class NewsFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-
         }
 
         mContext = getContext();
+
     }
 
     @Override
@@ -95,7 +105,10 @@ public class NewsFragment extends Fragment {
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+
         View view = inflater.inflate(R.layout.fragment_news, container, false);
+        mRecyclerView = view.findViewById(R.id.newsRecyclerView);
+        makeApiCall();
         mProgressBar = view.findViewById(R.id.news_progress_bar);
 
 
@@ -113,8 +126,9 @@ public class NewsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         toolbar = view.findViewById(R.id.toolbar);
-        makeApiCall();
         Log.d("News Fragment", "Toolbar created");
+
+
 
     }
 
@@ -128,7 +142,7 @@ public class NewsFragment extends Fragment {
             displayMessage(title, message);
         }
 
-        mProgressBar.setVisibility(View.VISIBLE);
+       // mProgressBar.setVisibility(View.VISIBLE);
 
         ApiInterface apiInterface = ApiClient.getNewsClient().create(ApiInterface.class);
 
@@ -157,14 +171,17 @@ public class NewsFragment extends Fragment {
                     displayMessage(errorTitle, errorMessage);
                 } else {
 
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    mNewsAdapter = new NewsAdapter(getActivity(), newsQuote.getResults(), NewsFragment.this);
+                    mRecyclerView.setAdapter(mNewsAdapter);
+                    //mNewsItems = newsQuote.getResults();
                     //NewsItem newsItem =  newsQuote.getResults().get(1);
                     //Log.d(TAG, newsItem.getAuthor());
-                    Log.d(TAG, String.valueOf(newsQuote.getResults().get(1).getTitle()));
+                    Log.d(TAG, String.valueOf(newsQuote.getResults().size()));
                     //Log.e(TAG, new Gson().toJson(newsQuote));
 
                 }
             }
-
 
 
             @Override
@@ -207,6 +224,11 @@ public class NewsFragment extends Fragment {
         super.onDestroyView();
         ((Main2Activity)getActivity()).setToolbar(null);
         super.onDestroyView();
+    }
+
+    @Override
+    public void onListItemClick(int position) {
+
     }
     /*public void onButtonPressed(Uri uri) {
         if (mListener != null) {
