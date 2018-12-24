@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import com.google.gson.Gson;
 
 import ng.org.knowit.fons.Main2Activity;
+import ng.org.knowit.fons.Models.NewsItem;
 import ng.org.knowit.fons.Models.NewsQuote;
 import ng.org.knowit.fons.R;
 import ng.org.knowit.fons.Rest.ApiClient;
@@ -156,7 +157,10 @@ public class NewsFragment extends Fragment {
                     displayMessage(errorTitle, errorMessage);
                 } else {
 
-                    Log.e(TAG, new Gson().toJson(newsQuote));
+                    //NewsItem newsItem =  newsQuote.getResults().get(1);
+                    //Log.d(TAG, newsItem.getAuthor());
+                    Log.d(TAG, String.valueOf(newsQuote.getResults().get(1).getTitle()));
+                    //Log.e(TAG, new Gson().toJson(newsQuote));
 
                 }
             }
