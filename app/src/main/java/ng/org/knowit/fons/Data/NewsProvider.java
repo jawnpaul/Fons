@@ -12,34 +12,34 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
-public class CompanyProvider extends ContentProvider {
+public class NewsProvider extends ContentProvider {
 
-    private static final String TAG = CompanyProvider.class.getSimpleName();
+    private static final String TAG = NewsProvider.class.getSimpleName();
 
-    private CompanyDbHelper mCompanyDbHelper;
+    private NewsDbHelper mNewsDbHelper;
 
 
-    private static final int COMPANY = 100;
-    private static final int COMPANY_WITH_ID = 101;
+    private static final int NEWS = 100;
+    private static final int NEWS_WITH_ID = 101;
 
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     public static UriMatcher buildUriMatcher(){
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(CompanyContract.CONTENT_AUTHORITY,
-                CompanyContract.CompanyEntry.TABLE_NAME,
-                COMPANY);
+        uriMatcher.addURI(NewsContract.CONTENT_AUTHORITY,
+                NewsContract.NewsEntry.TABLE_NAME,
+                NEWS);
 
-        uriMatcher.addURI(CompanyContract.CONTENT_AUTHORITY,
-                CompanyContract.CompanyEntry.TABLE_NAME + "/#",
-                COMPANY_WITH_ID);
+        uriMatcher.addURI(NewsContract.CONTENT_AUTHORITY,
+                NewsContract.NewsEntry.TABLE_NAME + "/#",
+                NEWS_WITH_ID);
         return uriMatcher;
     }
 
     @Override
     public boolean onCreate() {
-        mCompanyDbHelper = new CompanyDbHelper(getContext());
+        mNewsDbHelper = new NewsDbHelper(getContext());
         return true;
     }
 
@@ -47,15 +47,15 @@ public class CompanyProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
-        final SQLiteDatabase db = mCompanyDbHelper.getReadableDatabase();
+        final SQLiteDatabase db = mNewsDbHelper.getReadableDatabase();
 
         int match = sUriMatcher.match(uri);
 
         Cursor retCursor;
 
         switch (match){
-            case COMPANY:
-                retCursor = db.query(CompanyContract.CompanyEntry.TABLE_NAME,
+            case NEWS:
+                retCursor = db.query(NewsContract.NewsEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -64,12 +64,12 @@ public class CompanyProvider extends ContentProvider {
                         sortOrder);
                 break;
 
-            case COMPANY_WITH_ID:
+            case NEWS_WITH_ID:
                 String id  = uri.getPathSegments().get(1);
                 String mSelection = "_id=?";
                 String[] mSelectionArgs = new String[]{id};
 
-                retCursor = db.query(CompanyContract.CompanyEntry.TABLE_NAME,
+                retCursor = db.query(NewsContract.NewsEntry.TABLE_NAME,
                         projection,
                         mSelection,
                         mSelectionArgs,
@@ -97,19 +97,19 @@ public class CompanyProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        final SQLiteDatabase db = mCompanyDbHelper.getWritableDatabase();
+        final SQLiteDatabase db = mNewsDbHelper.getWritableDatabase();
 
         int match = sUriMatcher.match(uri);
 
         Uri returnUri;
 
         switch (match){
-            case COMPANY:
-                long id = db.insert(CompanyContract.CompanyEntry.TABLE_NAME, null, values);
+            case NEWS:
+                long id = db.insert(NewsContract.NewsEntry.TABLE_NAME, null, values);
 
                 if(id > 0){
                     Log.d(TAG, "INSERTED");
-                    returnUri = ContentUris.withAppendedId(CompanyContract.CONTENT_URI, id);
+                    returnUri = ContentUris.withAppendedId(NewsContract.CONTENT_URI, id);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri );
                 }
@@ -127,15 +127,15 @@ public class CompanyProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete( Uri uri,  String selection,  String[] selectionArgs) {
         switch (sUriMatcher.match(uri)) {
-            case COMPANY:
+            case NEWS:
                 //Rows aren't counted with null selection
                 selection = (selection == null) ? "1" : selection;
                 break;
-            case COMPANY_WITH_ID:
+            case NEWS_WITH_ID:
                 long id = ContentUris.parseId(uri);
-                selection = String.format("%s = ?", CompanyContract.CompanyEntry._ID);
+                selection = String.format("%s = ?", NewsContract.NewsEntry._ID);
                 selectionArgs = new String[]{String.valueOf(id)};
 
                 break;
@@ -145,8 +145,8 @@ public class CompanyProvider extends ContentProvider {
 
         }
 
-        SQLiteDatabase db = mCompanyDbHelper.getWritableDatabase();
-        int count = db.delete(CompanyContract.CompanyEntry.TABLE_NAME, selection, selectionArgs);
+        SQLiteDatabase db = mNewsDbHelper.getWritableDatabase();
+        int count = db.delete(NewsContract.NewsEntry.TABLE_NAME, selection, selectionArgs);
 
         if (count > 0) {
             //Notify observers of the change
@@ -158,30 +158,30 @@ public class CompanyProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        final SQLiteDatabase db = mCompanyDbHelper.getWritableDatabase();
+        final SQLiteDatabase db = mNewsDbHelper.getWritableDatabase();
 
         int rowsUpdated =0;
 
         int match = sUriMatcher.match(uri);
         switch (sUriMatcher.match(uri)){
-            case COMPANY:
-                rowsUpdated = db.update(CompanyContract.CompanyEntry.TABLE_NAME,
+            case NEWS:
+                rowsUpdated = db.update(NewsContract.NewsEntry.TABLE_NAME,
                         values,
                         selection,
                         selectionArgs);
                 break;
 
-            case COMPANY_WITH_ID:
+            case NEWS_WITH_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    rowsUpdated = db.update(CompanyContract.CompanyEntry.TABLE_NAME,
+                    rowsUpdated = db.update(NewsContract.NewsEntry.TABLE_NAME,
                             values,
-                            CompanyContract.CompanyEntry._ID + "=" + id,
+                            NewsContract.NewsEntry._ID + "=" + id,
                             null);
                 } else {
-                    rowsUpdated = db.update(CompanyContract.CompanyEntry.TABLE_NAME,
+                    rowsUpdated = db.update(NewsContract.NewsEntry.TABLE_NAME,
                             values,
-                            CompanyContract.CompanyEntry._ID + "=" + id
+                            NewsContract.NewsEntry._ID + "=" + id
                                     + " and "
                                     + selection,
                             selectionArgs);

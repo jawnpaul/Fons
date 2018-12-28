@@ -1,6 +1,5 @@
 package ng.org.knowit.fons.Data;
 
-
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,10 +7,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
-public class CompanyUpdateService extends IntentService {
-    private static final String TAG = CompanyUpdateService.class.getSimpleName();
+public class NewsUpdateService extends IntentService {
+
+    private static final String TAG = NewsUpdateService.class.getSimpleName();
     //Intent actions
     public static final String ACTION_INSERT = TAG + ".INSERT";
     public static final String ACTION_UPDATE = TAG + ".UPDATE";
@@ -20,14 +19,15 @@ public class CompanyUpdateService extends IntentService {
     public static final String EXTRA_VALUES = TAG + ".ContentValues";
 
     public static void insertNewCompany(Context context, ContentValues values) {
-        Intent intent = new Intent(context, CompanyUpdateService.class);
+        Intent intent = new Intent(context, NewsUpdateService.class);
         intent.setAction(ACTION_INSERT);
         intent.putExtra(EXTRA_VALUES, values);
         context.startService(intent);
     }
 
+
     public static void updateCompany(Context context, Uri uri, ContentValues values) {
-        Intent intent = new Intent(context, CompanyUpdateService.class);
+        Intent intent = new Intent(context, NewsUpdateService.class);
         intent.setAction(ACTION_UPDATE);
         intent.setData(uri);
         intent.putExtra(EXTRA_VALUES, values);
@@ -35,13 +35,13 @@ public class CompanyUpdateService extends IntentService {
     }
 
     public static void deleteCompany(Context context, Uri uri) {
-        Intent intent = new Intent(context, CompanyUpdateService.class);
+        Intent intent = new Intent(context, NewsUpdateService.class);
         intent.setAction(ACTION_DELETE);
         intent.setData(uri);
         context.startService(intent);
     }
 
-    public CompanyUpdateService() {
+    public NewsUpdateService() {
         super(TAG);
     }
 
@@ -59,11 +59,11 @@ public class CompanyUpdateService extends IntentService {
     }
 
     private void performInsert(ContentValues values) {
-        if (getContentResolver().insert(CompanyContract.CONTENT_URI, values) != null) {
-            Log.d(TAG, "Inserted new company");
-            Log.d(TAG, getContentResolver().insert(CompanyContract.CONTENT_URI, values).toString());
+        if (getContentResolver().insert(NewsContract.CONTENT_URI, values) != null) {
+            Log.d(TAG, "Inserted news item");
+            Log.d(TAG, getContentResolver().insert(NewsContract.CONTENT_URI, values).toString());
         } else {
-            Log.w(TAG, "Error inserting new company");
+            Log.w(TAG, "Error inserting news item");
         }
 
 

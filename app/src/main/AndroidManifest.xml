@@ -32,6 +32,14 @@
         <service
             android:name=".Data.CompanyUpdateService"
             android:exported="false" />
+
+        <provider
+            android:authorities="ng.org.knowit.fons"
+            android:name="ng.org.knowit.fons.Data.NewsProvider"
+            android:exported="false" />
+
+        <service android:name=".Data.NewsUpdateService"
+                 android:exported="false"/>
     </application>
 
 </manifest>
