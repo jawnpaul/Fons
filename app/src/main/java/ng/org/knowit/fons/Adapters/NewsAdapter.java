@@ -83,7 +83,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             titleTextView.setText(newsItem.getTitle());
 
             String imageUrl = newsItem.getUrlToImage();
-            Glide.with(mContext).load(imageUrl).into(newsImageView);
+            if (imageUrl != null){
+                Glide.with(mContext).load(imageUrl).into(newsImageView);
+            } else {
+                Glide.with(mContext).load(R.drawable.app_installation).into(newsImageView);
+            }
+
         }
 
         @Override
