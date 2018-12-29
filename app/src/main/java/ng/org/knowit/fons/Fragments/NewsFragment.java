@@ -1,5 +1,6 @@
 package ng.org.knowit.fons.Fragments;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
@@ -22,6 +23,8 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 import ng.org.knowit.fons.Adapters.NewsAdapter;
+import ng.org.knowit.fons.Data.NewsContract;
+import ng.org.knowit.fons.Data.NewsUpdateService;
 import ng.org.knowit.fons.Main2Activity;
 import ng.org.knowit.fons.Models.NewsItem;
 import ng.org.knowit.fons.Models.NewsQuote;
@@ -153,7 +156,6 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
             public void onResponse(Call<NewsQuote> call, Response<NewsQuote> response) {
                 NewsQuote newsQuote = response.body();
 
-
                 mProgressBar.setVisibility(View.INVISIBLE);
 
                 if (newsQuote == null) {
@@ -174,12 +176,10 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     mNewsAdapter = new NewsAdapter(getActivity(), newsQuote.getResults(), NewsFragment.this);
                     mRecyclerView.setAdapter(mNewsAdapter);
-                    //mNewsItems = newsQuote.getResults();
-                    //NewsItem newsItem =  newsQuote.getResults().get(1);
-                    //Log.d(TAG, newsItem.getAuthor());
-                    Log.d(TAG, String.valueOf(newsQuote.getResults().size()));
-                    //Log.e(TAG, new Gson().toJson(newsQuote));
 
+                    Log.d(TAG, String.valueOf(newsQuote.getResults().size()));
+
+                    //getNewsItem(newsQuote);
                 }
             }
 
@@ -192,6 +192,35 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
                 displayMessage(errorTitle, errorMessage);
             }
         });
+
+    }
+
+    private void getNewsItem(NewsQuote newsQuote){
+        for ( NewsItem newsItem : newsQuote.getResults() ) {
+            String author = newsItem.getAuthor();
+            String title = newsItem.getTitle();
+            String description = newsItem.getDescription();
+            String content = newsItem.getContent();
+            String publishedAt = newsItem.getPublishedAt();
+            String url = newsItem.getUrl();
+            String urlToImage = newsItem.getUrlToImage();
+
+            saveNewsToDatabase(author, title, description, content, publishedAt, url, urlToImage);
+        }
+    }
+
+    private void saveNewsToDatabase(String author, String title, String description, String content,
+            String publishedAt, String url, String urlToImage){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(NewsContract.NewsEntry.COLUMN_AUTHOR, author);
+        contentValues.put(NewsContract.NewsEntry.COLUMN_CONTENT, content);
+        contentValues.put(NewsContract.NewsEntry.COLUMN_DESCRIPTION, description);
+        contentValues.put(NewsContract.NewsEntry.COLUMN_TITLE, title);
+        contentValues.put(NewsContract.NewsEntry.COLUMN_PUBLISHED_AT, publishedAt);
+        contentValues.put(NewsContract.NewsEntry.COLUMN_URL, url);
+        contentValues.put(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE, urlToImage);
+
+        NewsUpdateService.insertNewCompany(mContext, contentValues);
 
     }
 
@@ -230,6 +259,8 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
     public void onListItemClick(int position) {
 
     }
+
+
     /*public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);

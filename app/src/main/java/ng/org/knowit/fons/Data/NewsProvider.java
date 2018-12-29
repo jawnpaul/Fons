@@ -19,13 +19,13 @@ public class NewsProvider extends ContentProvider {
     private NewsDbHelper mNewsDbHelper;
 
 
-    private static final int NEWS = 100;
-    private static final int NEWS_WITH_ID = 101;
+    private static final int NEWS = 200;
+    private static final int NEWS_WITH_ID = 201;
 
 
-    private static final UriMatcher sUriMatcher = buildUriMatcher();
+    private static final UriMatcher sUriMatcher = buildNewsUriMatcher();
 
-    public static UriMatcher buildUriMatcher(){
+    public static UriMatcher buildNewsUriMatcher(){
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(NewsContract.CONTENT_AUTHORITY,
                 NewsContract.NewsEntry.TABLE_NAME,
@@ -108,7 +108,7 @@ public class NewsProvider extends ContentProvider {
                 long id = db.insert(NewsContract.NewsEntry.TABLE_NAME, null, values);
 
                 if(id > 0){
-                    Log.d(TAG, "INSERTED");
+                    Log.d(TAG, "News INSERTED");
                     returnUri = ContentUris.withAppendedId(NewsContract.CONTENT_URI, id);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri );

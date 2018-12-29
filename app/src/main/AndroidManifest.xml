@@ -34,8 +34,8 @@
             android:exported="false" />
 
         <provider
-            android:authorities="ng.org.knowit.fons"
             android:name="ng.org.knowit.fons.Data.NewsProvider"
+            android:authorities="ng.org.knowit.fons.News"
             android:exported="false" />
 
         <service android:name=".Data.NewsUpdateService"

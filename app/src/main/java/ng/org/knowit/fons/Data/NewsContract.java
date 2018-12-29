@@ -19,7 +19,7 @@ public class NewsContract {
     }
 
     //Unique authority string for the content provider
-    public static final String CONTENT_AUTHORITY = "ng.org.knowit.fons";
+    public static final String CONTENT_AUTHORITY = "ng.org.knowit.fons.News";
 
     // The base content URI = "content://" + <authority>
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
@@ -27,7 +27,7 @@ public class NewsContract {
     public static final Uri CONTENT_URI =
             BASE_CONTENT_URI.buildUpon().appendPath(NewsEntry.TABLE_NAME).build();
 
-    public static Uri buildSingleCompany(long id) {
+    public static Uri buildSingleNews(long id) {
         return CONTENT_URI.buildUpon()
                 .appendPath(Long.toString(id))
                 .build();

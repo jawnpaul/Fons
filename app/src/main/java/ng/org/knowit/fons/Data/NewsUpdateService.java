@@ -71,11 +71,11 @@ public class NewsUpdateService extends IntentService {
 
     private void performUpdate(Uri uri, ContentValues values) {
         int count = getContentResolver().update(uri, values, null, null);
-        Log.d(TAG, "Updated " + count + " company items");
+        Log.d(TAG, "Updated " + count + " News items");
     }
 
     private void performDelete(Uri uri) {
         int count = getContentResolver().delete(uri, null, null);
-        Log.d(TAG, "Deleted "+count+" company");
+        Log.d(TAG, "Deleted "+count+" News");
     }
 }
