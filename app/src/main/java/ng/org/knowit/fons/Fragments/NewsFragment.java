@@ -3,6 +3,8 @@ package ng.org.knowit.fons.Fragments;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,7 +25,9 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 import ng.org.knowit.fons.Adapters.NewsAdapter;
+import ng.org.knowit.fons.Adapters.NewsDatabaseAdapter;
 import ng.org.knowit.fons.Data.NewsContract;
+import ng.org.knowit.fons.Data.NewsDbHelper;
 import ng.org.knowit.fons.Data.NewsUpdateService;
 import ng.org.knowit.fons.Main2Activity;
 import ng.org.knowit.fons.Models.NewsItem;
@@ -62,6 +66,10 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
     private Context mContext;
     private NewsAdapter mNewsAdapter;
 
+    private NewsDatabaseAdapter mNewsDatabaseAdapter;
+    private SQLiteDatabase mSQLiteDatabase;
+    private  Cursor mCursor;
+
 
     Toolbar toolbar;
     ProgressBar mProgressBar;
@@ -97,8 +105,10 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
 
+        if(mCursor!= null) mCursor.close();
         mContext = getContext();
 
     }
@@ -111,8 +121,15 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
 
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         mRecyclerView = view.findViewById(R.id.newsRecyclerView);
-        makeApiCall();
-        mProgressBar = view.findViewById(R.id.news_progress_bar);
+
+        if (isOnline()){
+            makeApiCall();
+            mProgressBar = view.findViewById(R.id.news_progress_bar);
+        } else{
+
+            loadNewsFromDatabase();
+        }
+
 
 
     return view;
@@ -259,6 +276,30 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
     public void onListItemClick(int position) {
 
     }
+
+    private void loadNewsFromDatabase(){
+
+        NewsDbHelper dbHelper = new NewsDbHelper(getActivity());
+        mSQLiteDatabase = dbHelper.getWritableDatabase();
+
+        if(mCursor!= null) mCursor.close();
+        mCursor = getAllCompany();
+
+        mNewsDatabaseAdapter = new NewsDatabaseAdapter(getActivity(), mCursor);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mRecyclerView.setAdapter(mNewsDatabaseAdapter);
+    }
+
+    private Cursor getAllCompany() {
+        return mSQLiteDatabase.query(NewsContract.NewsEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                NewsContract.NewsEntry._ID); }
 
 
     /*public void onButtonPressed(Uri uri) {
