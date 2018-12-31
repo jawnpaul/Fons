@@ -120,7 +120,6 @@ public class NewsProvider extends ContentProvider {
 
         }
 
-
         getContext().getContentResolver().notifyChange(uri, null);
 
         return  returnUri;
