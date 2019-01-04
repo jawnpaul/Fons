@@ -24,7 +24,7 @@ public class NewsDbHelper extends SQLiteOpenHelper {
                 NewsContract.NewsEntry.COLUMN_PUBLISHED_AT + " TEXT NOT NULL, " +
                 NewsContract.NewsEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 NewsContract.NewsEntry.COLUMN_URL + " TEXT NOT NULL, " +
-                NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE + " TEXT NOT NULL " +
+                NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE + " BLOB NOT NULL " +
                 "); ";
         sqLiteDatabase.execSQL(SQL_CREATE_NEWS_ENTRY_TABLE);
 

@@ -1,5 +1,7 @@
 package ng.org.knowit.fons;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
@@ -7,6 +9,8 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.graphics.Palette;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,7 +31,7 @@ public class Main2Activity extends AppCompatActivity
         BottomNavigationView.OnNavigationItemSelectedListener
 {
 
-
+    private static final String TAG = Main2Activity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,5 +176,8 @@ public class Main2Activity extends AppCompatActivity
             drawer.setDrawerListener(null);
         }
     }
+
+
+// TODO: Load model.tflite file in background possibly async task to reduce work on main thread
 
 }

@@ -2,6 +2,7 @@ package ng.org.knowit.fons.Adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import ng.org.knowit.fons.Data.NewsContract;
 import ng.org.knowit.fons.R;
+import ng.org.knowit.fons.Utility.ImageUtility;
 
 public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapter.NewsDatabaseViewHolder> {
 
@@ -41,11 +43,14 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
 
         String author  = mCursor.getString(mCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_AUTHOR));
         String title = mCursor.getString(mCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_TITLE));
-        String urlToImage = mCursor.getString(mCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE));
+        byte[] newsImage = mCursor.getBlob(mCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE));
 
+        Bitmap imageBitmap = ImageUtility.getImage(newsImage);
         holder.authorTextView.setText(author);
         holder.titleTextView.setText(title);
-        holder.newsImageView.setImageURI(Uri.parse(urlToImage));
+        holder.newsImageView.setImageBitmap(imageBitmap);
+
+
     }
 
 

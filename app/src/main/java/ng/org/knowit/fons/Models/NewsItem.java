@@ -38,6 +38,7 @@ public class NewsItem implements Parcelable {
     @Expose
     private String content;
 
+    private byte[] image;
 
     @Override
     public int describeContents() {
@@ -63,6 +64,9 @@ public class NewsItem implements Parcelable {
         setTitle(parcel.readString());
         setUrl(parcel.readString());
         setUrlToImage(parcel.readString());
+
+        if(image != null)
+            parcel.readByteArray(image);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -133,5 +137,11 @@ public class NewsItem implements Parcelable {
         this.content = content;
     }
 
+    public byte[] getImage() {
+        return image;
+    }
 
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
 }
