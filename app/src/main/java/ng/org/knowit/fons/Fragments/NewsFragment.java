@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ import ng.org.knowit.fons.Adapters.NewsAdapter;
 import ng.org.knowit.fons.Adapters.NewsDatabaseAdapter;
 import ng.org.knowit.fons.Data.NewsContract;
 import ng.org.knowit.fons.Data.NewsDbHelper;
+import ng.org.knowit.fons.Data.NewsProvider;
 import ng.org.knowit.fons.Data.NewsUpdateService;
 import ng.org.knowit.fons.Main2Activity;
 import ng.org.knowit.fons.Models.NewsItem;
@@ -119,11 +121,6 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
         if(mCursor!= null) mCursor.close();
         mContext = getContext();
 
-        NewsDbHelper dbHelper = new NewsDbHelper(getActivity());
-        mSQLiteDatabase = dbHelper.getWritableDatabase();
-
-        if(mCursor!= null) mCursor.close();
-        mCursor = getAllCompany();
     }
 
     @Override
@@ -131,6 +128,11 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        NewsDbHelper dbHelper = new NewsDbHelper(getActivity());
+        mSQLiteDatabase = dbHelper.getWritableDatabase();
+
+        if(mCursor!= null) mCursor.close();
+        mCursor = getAllCompany();
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         mRecyclerView = view.findViewById(R.id.newsRecyclerView);
 
@@ -139,7 +141,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
             mProgressBar = view.findViewById(R.id.news_progress_bar);
         } else{
 
-            //loadNewsFromDatabase();
+            loadNewsFromDatabase();
         }
 
 
@@ -204,6 +206,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
                     mNewsAdapter = new NewsAdapter(getActivity(), newsQuote.getResults(), NewsFragment.this);
                     mRecyclerView.setAdapter(mNewsAdapter);
 
+
                     Log.d(TAG, String.valueOf(newsQuote.getResults().size()));
 
                     getNewsItem(newsQuote);
@@ -236,8 +239,14 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
 
 
 
-            final String finalUrlToImage = urlToImage;
-            final int finalI = i;
+           /* final String finalUrlToImage = urlToImage;
+            final int finalI = i;*/
+
+            if(mCursor.getCount() <= 0){
+                saveNewsToDatabase(author, title, description, content, publishedAt, url, urlToImage);
+            } else {
+                updateNews(i, author, title, description, content, publishedAt, url, urlToImage );
+            }
 
             /*new Thread(new Runnable(){
                 @Override
@@ -269,7 +278,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
     }
 
     private void saveNewsToDatabase(String author, String title, String description, String content,
-            String publishedAt, String url, byte[] imageByteArray){
+            String publishedAt, String url, String imageUrl){
         ContentValues contentValues = new ContentValues();
         contentValues.put(NewsContract.NewsEntry.COLUMN_AUTHOR, author);
         contentValues.put(NewsContract.NewsEntry.COLUMN_CONTENT, content);
@@ -277,9 +286,15 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
         contentValues.put(NewsContract.NewsEntry.COLUMN_TITLE, title);
         contentValues.put(NewsContract.NewsEntry.COLUMN_PUBLISHED_AT, publishedAt);
         contentValues.put(NewsContract.NewsEntry.COLUMN_URL, url);
-        contentValues.put(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE, imageByteArray);
+        contentValues.put(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE, imageUrl);
 
-        NewsUpdateService.insertNewCompany(mContext, contentValues);
+        Uri uri = mContext.getContentResolver().insert(NewsContract.CONTENT_URI, contentValues);
+        //NewsUpdateService.insertNewCompany(mContext, contentValues);
+
+        if (uri != null){
+            Log.d(TAG, uri.toString());
+        }
+
 
 
     }
@@ -336,8 +351,8 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
     }
 
     private void updateNews(int i, String author, String title, String description, String content,
-            String publishedAt, String url, byte[] imageByteArray){
-        Uri uriForNewsItem = NewsContract.buildSingleNews((i + 1) * 2);
+            String publishedAt, String url, String imageUrl){
+        Uri uriForNewsItem = NewsContract.buildSingleNews(i+1);
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(NewsContract.NewsEntry.COLUMN_AUTHOR, author);
@@ -346,7 +361,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
         contentValues.put(NewsContract.NewsEntry.COLUMN_TITLE, title);
         contentValues.put(NewsContract.NewsEntry.COLUMN_PUBLISHED_AT, publishedAt);
         contentValues.put(NewsContract.NewsEntry.COLUMN_URL, url);
-        contentValues.put(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE, imageByteArray);
+        contentValues.put(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE, imageUrl);
 
         NewsUpdateService.updateCompany(mContext, uriForNewsItem, contentValues);
 

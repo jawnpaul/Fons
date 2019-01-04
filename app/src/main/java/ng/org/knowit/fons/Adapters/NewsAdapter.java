@@ -149,7 +149,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
 
                                     Palette palette = Palette.from(resource).generate();
                                     int defaultValue = 0x000000;
-                                   titleTextView.setTextColor(palette.getDarkMutedColor(defaultValue));
+                                   titleTextView.setTextColor(ImageUtility.manipulateColor(palette.getVibrantColor(defaultValue),10f));
 
                                 }
 

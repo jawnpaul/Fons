@@ -65,8 +65,6 @@ public class NewsUpdateService extends IntentService {
         } else {
             Log.w(TAG, "Error inserting news item");
         }
-
-
     }
 
     private void performUpdate(Uri uri, ContentValues values) {

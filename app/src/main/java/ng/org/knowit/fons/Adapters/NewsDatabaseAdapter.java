@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,12 @@ import android.widget.TextView;
 
 import ng.org.knowit.fons.Data.NewsContract;
 import ng.org.knowit.fons.R;
+import ng.org.knowit.fons.Utility.GlideApp;
 import ng.org.knowit.fons.Utility.ImageUtility;
 
 public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapter.NewsDatabaseViewHolder> {
 
+    private final String TAG = NewsDatabaseAdapter.class.getCanonicalName();
     private final Context mContext;
     private Cursor mCursor;
 
@@ -33,6 +36,7 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
     public NewsDatabaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         View view = layoutInflater.inflate(R.layout.news_item, parent, false);
+
         return new NewsDatabaseViewHolder(view);
     }
 
@@ -43,13 +47,18 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
 
         String author  = mCursor.getString(mCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_AUTHOR));
         String title = mCursor.getString(mCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_TITLE));
-        byte[] newsImage = mCursor.getBlob(mCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE));
+        String newsImageUrl = mCursor.getString(mCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE));
 
-        Bitmap imageBitmap = ImageUtility.getImage(newsImage);
+
         holder.authorTextView.setText(author);
         holder.titleTextView.setText(title);
-        holder.newsImageView.setImageBitmap(imageBitmap);
-
+        GlideApp.with(mContext)
+                .load(newsImageUrl)
+                //TODO: Change the drawable for placeholder(while image is still loading) and error
+                .placeholder(R.drawable.app_installation)
+                .error(R.drawable.ic_menu)
+                .onlyRetrieveFromCache(true)
+                .into(holder.newsImageView);
 
     }
 
@@ -57,6 +66,7 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
     @Override
     public int getItemCount() {
         return mCursor.getCount();
+
     }
 
 
@@ -75,5 +85,6 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
             volumeTextView = itemView.findViewById(R.id.textViewVolumeQuantity);
             changePercentTextView = itemView.findViewById(R.id.textViewPercentage);*/
         }
+
     }
 }
