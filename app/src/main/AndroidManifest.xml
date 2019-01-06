@@ -7,12 +7,12 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:hardwareAccelerated="true">
+        android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,21 +26,30 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
-            android:name="ng.org.knowit.fons.Data.CompanyProvider"
+            android:name=".Data.CompanyProvider"
             android:authorities="ng.org.knowit.fons"
-            android:exported="false"/>
+            android:exported="false" />
 
         <service
             android:name=".Data.CompanyUpdateService"
             android:exported="false" />
 
         <provider
-            android:name="ng.org.knowit.fons.Data.NewsProvider"
+            android:name=".Data.NewsProvider"
             android:authorities="ng.org.knowit.fons.News"
             android:exported="false" />
 
-        <service android:name=".Data.NewsUpdateService"
-                 android:exported="false"/>
+        <service
+            android:name=".Data.NewsUpdateService"
+            android:exported="false" />
+
+        <activity
+            android:name=".NewsDetail"
+            android:label="@string/title_activity_news_detail"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
     </application>
 
 </manifest>

@@ -33,7 +33,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginBottom="36dp"
             android:layout_marginStart="16dp"
-            android:text="The Dow tumbles more than 300 points"
+            android:text="@string/the_dow_tumbles_more_than_300_points"
             android:textColor="@android:color/background_light"
             android:textStyle="bold"
             android:layout_marginLeft="16dp"

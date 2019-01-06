@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
@@ -99,27 +100,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             authorTextView.setText(newsItem.getAuthor());
             titleTextView.setText(newsItem.getTitle());
 
-            Bitmap bitmap = ImageUtility.drawableToBitmap(newsImageView.getDrawable());
-
-            Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-                @Override
-                public void onGenerated(Palette palette) {
-                    //work with the palette here
-                    int defaultValue = Color.BLACK;
-                    int vibrant = palette.getVibrantColor(defaultValue);
-                    int vibrantLight = palette.getLightVibrantColor(defaultValue);
-                    int vibrantDark = palette.getDarkVibrantColor(defaultValue);
-                    int muted = palette.getMutedColor(defaultValue);
-                    int mutedLight = palette.getLightMutedColor(defaultValue);
-                    int mutedDark = palette.getDarkMutedColor(defaultValue);
-
-                    titleTextView.setTextColor(vibrant);
-
-                }
-            });
-
-
-            //titleTextView.setTextColor(paintTextBackground(newsImageView.getDrawable()));
 
             String imageUrl = newsItem.getUrlToImage();
             if (imageUrl != null){
@@ -157,16 +137,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
                             }
                         }).into(newsImageView);
 
-            } /*else {
-                GlideApp.with(mContext).load(R.drawable.app_installation).into(newsImageView);
-            }*/
-
+            }
         }
 
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
             mOnListItemClickListener.onListItemClick(position);
+
         }
     }
 

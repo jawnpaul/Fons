@@ -40,4 +40,6 @@ applications.</string>
     <string name="open">Open</string>
     <string name="price">115.57</string>
     <string name="volume_quantity">1234567</string>
+    <string name="title_activity_news_detail">NewsDetail</string>
+    <string name="the_dow_tumbles_more_than_300_points">The Dow tumbles more than 300 points</string>
 </resources>

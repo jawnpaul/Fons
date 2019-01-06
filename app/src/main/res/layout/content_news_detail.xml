@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    android:background="@color/colorPrimaryDark"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NewsDetail"
+    tools:showIn="@layout/activity_news_detail">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/newsDetailAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/newsDetailCollapsingToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+            app:expandedTitleMarginStart="72dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <ImageView
+                android:id="@+id/newsDetailImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax"
+                app:srcCompat="@drawable/app_installation" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/newsDetailToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:contentInsetStart="72dp"
+                app:navigationIcon="@drawable/ic_menu_arrow_back"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+
+    </android.support.design.widget.AppBarLayout>
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/newsDetailNestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        app:layout_anchor="@+id/newsDetailNestedScrollView"
+        app:layout_anchorGravity="top|center"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_margin="4dp"
+            android:padding="8dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/newsDetailTitleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/the_dow_tumbles_more_than_300_points"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:id="@+id/newsDetailAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Harvey Specter"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:layout_marginTop="4dp"
+                android:id="@+id/newsDetailContentTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:lineSpacingExtra="12sp"
+                android:text="Hurricane Michael has made landfall near Mexico Beach, Florida. The storm picked up steam as it sped across the Gulf of Mexico towards the Florida Panhandle. When its eye hit Florida's Gulf Coast on Wednesday afternoon, the storm had sustained winds of 155 mp… [+1551 chars]"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -3,6 +3,7 @@ package ng.org.knowit.fons.Fragments;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -39,6 +40,7 @@ import ng.org.knowit.fons.Data.NewsUpdateService;
 import ng.org.knowit.fons.Main2Activity;
 import ng.org.knowit.fons.Models.NewsItem;
 import ng.org.knowit.fons.Models.NewsQuote;
+import ng.org.knowit.fons.NewsDetail;
 import ng.org.knowit.fons.R;
 import ng.org.knowit.fons.Rest.ApiClient;
 import ng.org.knowit.fons.Rest.ApiInterface;
@@ -202,6 +204,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
                     displayMessage(errorTitle, errorMessage);
                 } else {
 
+                    mNewsItems = newsQuote.getResults();
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     mNewsAdapter = new NewsAdapter(getActivity(), newsQuote.getResults(), NewsFragment.this);
                     mRecyclerView.setAdapter(mNewsAdapter);
@@ -289,7 +292,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
         contentValues.put(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE, imageUrl);
 
         Uri uri = mContext.getContentResolver().insert(NewsContract.CONTENT_URI, contentValues);
-        //NewsUpdateService.insertNewCompany(mContext, contentValues);
+
 
         if (uri != null){
             Log.d(TAG, uri.toString());
@@ -335,6 +338,12 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
 
     @Override
     public void onListItemClick(int position) {
+
+        Intent intent = new Intent(getActivity(), NewsDetail.class);
+        NewsItem newsItem = mNewsItems.get(position);
+        intent.putExtra(Intent.EXTRA_TEXT, newsItem);
+        startActivity(intent);
+
 
     }
 

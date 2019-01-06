@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -59,6 +60,8 @@ public class HomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    public static final String TAG = HomeFragment.class.getSimpleName();
 
     private static final String GLOBAL_QUOTE = "GLOBAL_QUOTE";
     private static final String API_KEY = "FETXFXJ9VMMUJFE9";
@@ -497,7 +500,11 @@ public class HomeFragment extends Fragment {
         cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE, companyChange);
         cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE_PERCENT, companyChangePercent);
 
-        CompanyUpdateService.insertNewCompany(mContext, cv);
+        Uri uri = mContext.getContentResolver().insert(CompanyContract.CONTENT_URI, cv);
+
+        if (uri != null){
+            Log.d(TAG, uri.toString());
+        }
 
         mCompanyAdapter.swappCursor(mCursor);
     }
