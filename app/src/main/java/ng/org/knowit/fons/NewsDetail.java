@@ -6,8 +6,10 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -63,7 +65,7 @@ public class NewsDetail extends AppCompatActivity {
                 }
                 //Check if the view is collapsed
                 if (scrollRange + verticalOffset == 0) {
-                    mCollapsingToolbarLayout.setTitle(" ");
+                    mCollapsingToolbarLayout.setTitle("News Detail");
 
                 } else {
                     mCollapsingToolbarLayout.setTitle(" ");
@@ -75,6 +77,19 @@ public class NewsDetail extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent parentIntent = NavUtils.getParentActivityIntent(this);
+                parentIntent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(parentIntent);
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
 
     private void setUpViews(NewsItem newsItem){
         String newsTitle = newsItem.getTitle();
