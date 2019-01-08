@@ -1,9 +1,11 @@
 package ng.org.knowit.fons.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,17 +14,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ng.org.knowit.fons.Data.NewsContract;
+import ng.org.knowit.fons.Data.NewsDbHelper;
+import ng.org.knowit.fons.NewsDetail;
 import ng.org.knowit.fons.R;
 import ng.org.knowit.fons.Utility.GlideApp;
-import ng.org.knowit.fons.Utility.ImageUtility;
 
 public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapter.NewsDatabaseViewHolder> {
+
+
 
     private final String TAG = NewsDatabaseAdapter.class.getCanonicalName();
     private final Context mContext;
     private Cursor mCursor;
+
+    private Cursor singleCursor;
 
     public NewsDatabaseAdapter(Context context, Cursor cursor){
         this.mContext = context;
@@ -41,13 +49,14 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NewsDatabaseViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final NewsDatabaseViewHolder holder, int position) {
         if (!mCursor.moveToPosition(position))
             return;
 
         String author  = mCursor.getString(mCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_AUTHOR));
         String title = mCursor.getString(mCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_TITLE));
         String newsImageUrl = mCursor.getString(mCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE));
+
 
 
         holder.authorTextView.setText(author);
@@ -60,6 +69,16 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
                 .onlyRetrieveFromCache(true)
                 .into(holder.newsImageView);
 
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                retrieveParticularNews(holder.getAdapterPosition() + 1);
+
+            }
+        });
+
     }
 
 
@@ -69,7 +88,42 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
 
     }
 
+    private Cursor getSingleNews(int position) {
 
+       return mContext.getContentResolver().query(NewsContract.buildSingleNews(position),
+                null,
+                null,
+                null,
+                null); }
+
+    private void retrieveParticularNews(int position){
+        if(singleCursor!= null) singleCursor.close();
+        singleCursor = getSingleNews(position);
+
+        int indexAuthor = singleCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_AUTHOR);
+        int indexTitle = singleCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_TITLE);
+        int indexContent = singleCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_CONTENT);
+        int indexImageUrl = singleCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE);
+
+
+        if (singleCursor != null) {
+
+            while (singleCursor.moveToNext()) {
+
+                String author = singleCursor.getString(indexAuthor);
+                String title = singleCursor.getString(indexTitle);
+                String content = singleCursor.getString(indexContent);
+                String imageUrl = singleCursor.getString(indexImageUrl);
+
+                sendIntentForNewsDetail(author, content, title, imageUrl);
+
+                // end of while loop
+            }
+        } else {
+
+            // Insert code here to report an error if the cursor is null or the provider threw an exception.
+        }
+    }
     class NewsDatabaseViewHolder extends RecyclerView.ViewHolder{
         final TextView authorTextView, titleTextView;
         /*, descriptionTextView,
@@ -85,6 +139,20 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
             volumeTextView = itemView.findViewById(R.id.textViewVolumeQuantity);
             changePercentTextView = itemView.findViewById(R.id.textViewPercentage);*/
         }
+
+    }
+
+    private void sendIntentForNewsDetail(String author, String content, String title, String imageUrl){
+        Bundle bundle = new Bundle();
+        bundle.putString("author", author);
+        bundle.putString("newsContent", content);
+        bundle.putString("newsTitle", title);
+        bundle.putString("newsImageUrl", imageUrl);
+
+
+        Intent intent = new Intent(mContext, NewsDetail.class);
+        intent.putExtras(bundle);
+        mContext.startActivity(intent);
 
     }
 }

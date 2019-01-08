@@ -39,11 +39,16 @@ public class NewsDetail extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)){
             mNewsItem = intent.getParcelableExtra(Intent.EXTRA_TEXT);
-
             setUpViews(mNewsItem);
+        } else if (intent != null ){
+            newsAuthorTextView.setText(intent.getStringExtra("author"));
+            newsContentTextView.setText(intent.getStringExtra("newsContent"));
+            newsTitleTextView.setText(intent.getStringExtra("newsTitle"));
+            GlideApp.with(this).load(intent.getStringExtra("newsImageUrl")).into(newsImageView);
+
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

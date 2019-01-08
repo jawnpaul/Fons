@@ -6,18 +6,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,7 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -35,7 +29,6 @@ import ng.org.knowit.fons.Adapters.NewsAdapter;
 import ng.org.knowit.fons.Adapters.NewsDatabaseAdapter;
 import ng.org.knowit.fons.Data.NewsContract;
 import ng.org.knowit.fons.Data.NewsDbHelper;
-import ng.org.knowit.fons.Data.NewsProvider;
 import ng.org.knowit.fons.Data.NewsUpdateService;
 import ng.org.knowit.fons.Main2Activity;
 import ng.org.knowit.fons.Models.NewsItem;
@@ -44,7 +37,6 @@ import ng.org.knowit.fons.NewsDetail;
 import ng.org.knowit.fons.R;
 import ng.org.knowit.fons.Rest.ApiClient;
 import ng.org.knowit.fons.Rest.ApiInterface;
-import ng.org.knowit.fons.Utility.ImageUtility;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,7 +51,7 @@ import retrofit2.Response;
  * Use the {@link NewsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClickListener {
+public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClickListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -134,7 +126,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
         mSQLiteDatabase = dbHelper.getWritableDatabase();
 
         if(mCursor!= null) mCursor.close();
-        mCursor = getAllCompany();
+        mCursor = getAllNews();
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         mRecyclerView = view.findViewById(R.id.newsRecyclerView);
 
@@ -342,9 +334,8 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
         Intent intent = new Intent(getActivity(), NewsDetail.class);
         NewsItem newsItem = mNewsItems.get(position);
         intent.putExtra(Intent.EXTRA_TEXT, newsItem);
+
         startActivity(intent);
-
-
     }
 
     private void loadNewsFromDatabase(){
@@ -355,6 +346,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mRecyclerView.setAdapter(mNewsDatabaseAdapter);
+
 
         //mCursor.close();
     }
@@ -376,7 +368,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
 
     }
 
-    private Cursor getAllCompany() {
+    private Cursor getAllNews() {
         return mSQLiteDatabase.query(NewsContract.NewsEntry.TABLE_NAME,
                 null,
                 null,
@@ -384,6 +376,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
                 null,
                 null,
                 NewsContract.NewsEntry._ID); }
+
 
 
     /*public void onButtonPressed(Uri uri) {
