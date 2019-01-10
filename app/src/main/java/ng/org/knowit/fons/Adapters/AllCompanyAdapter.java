@@ -43,9 +43,16 @@ public class AllCompanyAdapter extends RecyclerView.Adapter<AllCompanyAdapter.Al
         String volume = mCursor.getString(mCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_VOLUME));
         String changePercent = mCursor.getString(mCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE_PERCENT));
 
+
+
         holder.priceTextView.setText(currentPrice);
         holder.highPriceTextView.setText(highPrice);
         holder.changePercentTextView.setText(changePercent);
+        if (changePercent.contains("-")){
+            holder.changePercentTextView.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+        } else {
+            holder.changePercentTextView.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
+        }
         holder.lowPriceTextView.setText(lowPrice);
         holder.volumeTextView.setText(volume);
         holder.openPriceTextView.setText(openPrice);

@@ -502,7 +502,7 @@ public class HomeFragment extends Fragment {
 
 
         public void updateViews(){
-        if (priceText.contains("-")){
+        if (changePercentText.contains("-")){
             changePercentTextView.setTextColor(getResources().getColor(R.color.colorAccent));
             } else {
             changePercentTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -638,8 +638,7 @@ public class HomeFragment extends Fragment {
                     }
                     displayMessage(errorTitle, errorMessage);
                 } else {
-                    String ade = timeSeriesQuote.getResults().toString();
-                    Log.w(TAG, ade);
+
                 }
             }
 
