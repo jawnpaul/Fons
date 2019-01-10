@@ -3,6 +3,7 @@ package ng.org.knowit.fons.Rest;
 
 import ng.org.knowit.fons.Models.GlobalQuote;
 import ng.org.knowit.fons.Models.NewsQuote;
+import ng.org.knowit.fons.Models.TimeSeriesQuote;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -21,5 +22,10 @@ public interface ApiInterface {
                                     @Query("apiKey") String apiKey);
 
 
+    @GET("query")
+    Call <TimeSeriesQuote> getCompanyTimeSeries(@Query("function") String TIME_SERIES_DAILY,
+                                                @Query("symbol") String symbol,
+                                                @Query("outputsize") String full,
+                                                @Query("apikey") String apikey);
 
 }

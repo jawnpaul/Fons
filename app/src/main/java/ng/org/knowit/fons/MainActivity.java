@@ -44,21 +44,21 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MainActivity.this, Main2Activity.class);
                 startActivity(intent);
-                //float prediction = doInference();
+               // float prediction = doInference();
                 //showResult.setText(Float.toString(prediction));
             }
         });
     }
 
     public float doInference (){
-        float [][] inputval = {{(float) 1.5300144, (float) 1.49734975, (float) 1.55317365, (float) 1.53696703,
+        float [][] inputVal = {{(float) 1.5300144, (float) 1.49734975, (float) 1.55317365, (float) 1.53696703,
                 (float) -0.78733775}};
 
-        float [][] outputval = new float[1][1];
+        float [][] outputVal = new float[1][1];
 
-        tflite.run(inputval, outputval);
+        tflite.run(inputVal, outputVal);
 
-        float inferredValue = outputval[0][0];
+        float inferredValue = outputVal[0][0];
 
         return inferredValue;
 

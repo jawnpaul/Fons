@@ -3,6 +3,7 @@ package ng.org.knowit.fons.Fragments;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
@@ -12,6 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -29,8 +32,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+
+import org.tensorflow.lite.Interpreter;
 
 import ng.org.knowit.fons.Adapters.CompanyAdapter;
 import ng.org.knowit.fons.Data.CompanyContract;
@@ -38,6 +49,7 @@ import ng.org.knowit.fons.Data.CompanyDbHelper;
 import ng.org.knowit.fons.Data.CompanyUpdateService;
 import ng.org.knowit.fons.Main2Activity;
 import ng.org.knowit.fons.Models.GlobalQuote;
+import ng.org.knowit.fons.Models.TimeSeriesQuote;
 import ng.org.knowit.fons.R;
 import ng.org.knowit.fons.Rest.ApiClient;
 import ng.org.knowit.fons.Rest.ApiInterface;
@@ -64,6 +76,8 @@ public class HomeFragment extends Fragment {
     public static final String TAG = HomeFragment.class.getSimpleName();
 
     private static final String GLOBAL_QUOTE = "GLOBAL_QUOTE";
+    private static final String TIME_SERIES_DAILY = "TIME_SERIES_DAILY";
+    private static final String OUTPUT_SIZE = "full";
     private static final String API_KEY = "FETXFXJ9VMMUJFE9";
     private static final String MICROSOFT_SYMBOL = "MSFT";
     private static final String GOOGLE_SYMBOL = "GOOGL";
@@ -77,6 +91,8 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    Interpreter tflite;
 
     private String[] companyNames;
 
@@ -135,6 +151,7 @@ public class HomeFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+
         companyNames = getResources().getStringArray(R.array.company_names);
         mContext = getContext();
 
@@ -143,6 +160,14 @@ public class HomeFragment extends Fragment {
 
         mCursor = getSpecificCompany();
         mCompanyAdapter = new CompanyAdapter(mContext, mCursor);
+
+
+        try {
+            tflite = new Interpreter(loadModelFile());
+            Log.d(TAG, "model file loaded");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
     }
 
@@ -180,6 +205,16 @@ public class HomeFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+
+
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                apiTimeSeriesCall();
+                //Toast.makeText(getContext(), String.valueOf(doInference()), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -541,6 +576,84 @@ public class HomeFragment extends Fragment {
                 null,
                 CompanyContract.CompanyEntry._ID);
     }
+
+    private MappedByteBuffer loadModelFile() throws IOException {
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("model.tflite");
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffSet = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffSet, declaredLength);
+    }
+
+
+    public float doInference (){
+        float [][] inputVal = {{(float) 1.5300144, (float) 1.49734975, (float) 1.55317365, (float) 1.53696703,
+                (float) -0.78733775}};
+
+        float [][] outputVal = new float[1][1];
+
+        tflite.run(inputVal, outputVal);
+
+        float inferredValue = outputVal[0][0];
+
+        return inferredValue;
+
+    }
+
+    private void apiTimeSeriesCall(){
+
+        if (!isOnline()) {
+
+            String title = "Connection";
+            String message = "No internet connection. Please try again.";
+            displayMessage(title, message);
+        }
+
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        ApiInterface apiInterface = ApiClient.getStockTimeSeries().create(ApiInterface.class);
+
+        String symbol = "MSFT";
+        Call<TimeSeriesQuote> callToApi = apiInterface.getCompanyTimeSeries(TIME_SERIES_DAILY,symbol, "compact", API_KEY);
+
+        callToApi.enqueue(new Callback<TimeSeriesQuote>() {
+            @Override
+            public void onResponse(Call<TimeSeriesQuote> call, Response<TimeSeriesQuote> response) {
+                TimeSeriesQuote timeSeriesQuote = response.body();
+
+                mProgressBar.setVisibility(View.INVISIBLE);
+
+                if (timeSeriesQuote == null) {
+
+                    ResponseBody responseBody = response.errorBody();
+                    String errorTitle;
+                    String errorMessage;
+                    if (responseBody != null) {
+                        errorTitle = "Error";
+                        errorMessage = "An error occurred.";
+                    } else {
+                        errorTitle = "Error";
+                        errorMessage = "No data Received.";
+                    }
+                    displayMessage(errorTitle, errorMessage);
+                } else {
+                    String ade = timeSeriesQuote.getResults().toString();
+                    Log.w(TAG, ade);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TimeSeriesQuote> call, Throwable t) {
+
+                mProgressBar.setVisibility(View.INVISIBLE);
+                String errorTitle = "Error";
+                String errorMessage = "Data request failed.";
+                displayMessage(errorTitle, errorMessage);
+            }
+        });
+    }
+
 }
 
 

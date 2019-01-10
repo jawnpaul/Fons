@@ -10,8 +10,10 @@ public class ApiClient {
     private static final String NEWS_BASE_URL = "https://newsapi.org/v2/";
     private static Retrofit.Builder stockRetrofitBuilder = null;
     private static Retrofit.Builder newsRetrofitBuilder = null;
+    private static Retrofit.Builder timeSeriesRetrofitBuilder = null;
     private static Retrofit stockRetrofit;
     private static Retrofit newsRetrofit;
+    private static Retrofit timeSeriesRetrofit;
 
 
 
@@ -51,5 +53,16 @@ public class ApiClient {
         }
         return newsRetrofit;
 
+    }
+
+    public static Retrofit getStockTimeSeries(){
+        if (timeSeriesRetrofit == null){
+            timeSeriesRetrofitBuilder = new Retrofit.Builder();
+            timeSeriesRetrofitBuilder.baseUrl(ALPHAVANTAGE_BASE_URL);
+            timeSeriesRetrofitBuilder.addConverterFactory(GsonConverterFactory.create());
+            timeSeriesRetrofit = timeSeriesRetrofitBuilder.build();
+
+        }
+       return timeSeriesRetrofit;
     }
 }

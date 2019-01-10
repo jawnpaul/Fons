@@ -416,4 +416,6 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }*/
+
+    // TODO: Add transitions
 }
