@@ -35,11 +35,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.tensorflow.lite.Interpreter;
 
@@ -49,6 +52,7 @@ import ng.org.knowit.fons.Data.CompanyDbHelper;
 import ng.org.knowit.fons.Data.CompanyUpdateService;
 import ng.org.knowit.fons.Main2Activity;
 import ng.org.knowit.fons.Models.GlobalQuote;
+import ng.org.knowit.fons.Models.TimeSeriesItem;
 import ng.org.knowit.fons.Models.TimeSeriesQuote;
 import ng.org.knowit.fons.R;
 import ng.org.knowit.fons.Rest.ApiClient;
@@ -638,7 +642,9 @@ public class HomeFragment extends Fragment {
                     }
                     displayMessage(errorTitle, errorMessage);
                 } else {
+                    List<JsonElement> individualItems =  timeSeriesQuote.parseValues(timeSeriesQuote.getResults());
 
+                    getStockTimeSeries(individualItems);
                 }
             }
 
@@ -651,6 +657,28 @@ public class HomeFragment extends Fragment {
                 displayMessage(errorTitle, errorMessage);
             }
         });
+    }
+
+    private void getStockTimeSeries(List<JsonElement> individualItems){
+        ArrayList<Double> openList = new ArrayList<>();
+        ArrayList<Double> highList = new ArrayList<>();
+        ArrayList<Double> lowList = new ArrayList<>();
+        ArrayList<Double> closeList = new ArrayList<>();
+        ArrayList<Double> volumeList = new ArrayList<>();
+
+        for (JsonElement jsonElement : individualItems ) {
+            double open = Double.parseDouble(jsonElement.getAsJsonObject().get("1. open").getAsString());
+            openList.add(open);
+            double high = Double.parseDouble(jsonElement.getAsJsonObject().get("2. high").getAsString());
+            highList.add(high);
+            double low = Double.parseDouble(jsonElement.getAsJsonObject().get("3. low").getAsString());
+            lowList.add(low);
+            double close = Double.parseDouble(jsonElement.getAsJsonObject().get("4. close").getAsString());
+            closeList.add(close);
+            double volume = Double.parseDouble(jsonElement.getAsJsonObject().get("5. volume").getAsString());
+            volumeList.add(volume);
+
+        }
     }
 
 }
