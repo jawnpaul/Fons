@@ -57,6 +57,7 @@ import ng.org.knowit.fons.Models.TimeSeriesQuote;
 import ng.org.knowit.fons.R;
 import ng.org.knowit.fons.Rest.ApiClient;
 import ng.org.knowit.fons.Rest.ApiInterface;
+import ng.org.knowit.fons.Utility.Calculations;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -116,6 +117,10 @@ public class HomeFragment extends Fragment {
     Spinner companySpinner;
 
     ProgressBar mProgressBar;
+
+    private double openPrice, highPrice, lowPrice, volumeQuantity, currentPrice;
+
+    private float openPriceNormalized, lowPriceNormalized, highPriceNormalized, currentPriceNormalized, volumeQuantityNormalized;
 
     TextView priceTextView, openPriceTextView, highPriceTextView,
             lowPriceTextView, volumeTextView, changePercentTextView;
@@ -304,7 +309,7 @@ public class HomeFragment extends Fragment {
         spinnerPosition = companySpinner.getSelectedItemPosition();
         switch (spinnerPosition){
             case 0:
-                //makeApiCall(MICROSOFT_SYMBOL);
+                makeApiCall(MICROSOFT_SYMBOL);
                 break;
             case 1:
                 //makeApiCall(GOOGLE_SYMBOL);
@@ -471,11 +476,22 @@ public class HomeFragment extends Fragment {
                         Log.e(TAG1, new Gson().toJson(globalQuote));
 
                         priceText = globalQuote.getCompanyQuote().getCurrentPrice();
+                        currentPrice = Double.parseDouble(priceText);
+
                         changePercentText = globalQuote.getCompanyQuote().getChangePercent();
+
                         openPriceText = globalQuote.getCompanyQuote().getOpenPrice();
+                        openPrice = Double.parseDouble(openPriceText);
+
                         highPriceText = globalQuote.getCompanyQuote().getHighPrice();
+                        highPrice = Double.parseDouble(highPriceText);
+
                         lowPriceText = globalQuote.getCompanyQuote().getLowPrice();
+                        lowPrice = Double.parseDouble(lowPriceText);
+
                         volumeText = globalQuote.getCompanyQuote().getCurrentVolume();
+                        volumeQuantity = Double.parseDouble(volumeText);
+
                         changeText = globalQuote.getCompanyQuote().getChange();
                         symbolText = globalQuote.getCompanyQuote().getCompanySymbol();
                         latestTradingDayText = globalQuote.getCompanyQuote().getLatestTradingDay();
@@ -591,15 +607,15 @@ public class HomeFragment extends Fragment {
     }
 
 
-    public float doInference (){
-        float [][] inputVal = {{(float) 1.5300144, (float) 1.49734975, (float) 1.55317365, (float) 1.53696703,
-                (float) -0.78733775}};
+    public float doInference (float open, float high, float low, float price, float volume){
+        float [][] inputVal = {{open, high, low, price, volume}};
 
         float [][] outputVal = new float[1][1];
 
         tflite.run(inputVal, outputVal);
 
         float inferredValue = outputVal[0][0];
+
 
         return inferredValue;
 
@@ -669,16 +685,53 @@ public class HomeFragment extends Fragment {
         for (JsonElement jsonElement : individualItems ) {
             double open = Double.parseDouble(jsonElement.getAsJsonObject().get("1. open").getAsString());
             openList.add(open);
+            openList.add(openPrice);
             double high = Double.parseDouble(jsonElement.getAsJsonObject().get("2. high").getAsString());
             highList.add(high);
+            highList.add(highPrice);
             double low = Double.parseDouble(jsonElement.getAsJsonObject().get("3. low").getAsString());
             lowList.add(low);
+            lowList.add(lowPrice);
             double close = Double.parseDouble(jsonElement.getAsJsonObject().get("4. close").getAsString());
             closeList.add(close);
+            closeList.add(currentPrice);
             double volume = Double.parseDouble(jsonElement.getAsJsonObject().get("5. volume").getAsString());
             volumeList.add(volume);
+            volumeList.add(volumeQuantity);
 
         }
+
+        double meanOpenPrices = Calculations.calculateMean(openList);
+        double meanHighPrices = Calculations.calculateMean(highList);
+        double meanLowPrices = Calculations.calculateMean(lowList);
+        double meanClosePrices = Calculations.calculateMean(closeList);
+        double meanVolumeQuantity = Calculations.calculateMean(volumeList);
+
+        double openStandardDev = Calculations.calculateStandardDeviation(openList);
+        double highStandardDev = Calculations.calculateStandardDeviation(highList);
+        double lowStandardDev = Calculations.calculateStandardDeviation(lowList);
+        double closeStandardDev = Calculations.calculateStandardDeviation(closeList);
+        double volumeStandardDev = Calculations.calculateStandardDeviation(volumeList);
+
+        openPriceNormalized = (float) ((openPrice - meanOpenPrices) / openStandardDev);
+        Log.w(TAG, String.valueOf(openPriceNormalized));
+
+        currentPriceNormalized = (float) ((currentPrice - meanClosePrices) / closeStandardDev);
+        Log.w(TAG, String.valueOf(currentPriceNormalized));
+
+        highPriceNormalized = (float) ((highPrice - meanHighPrices) / highStandardDev);
+        Log.w(TAG, String.valueOf(highPriceNormalized));
+
+        lowPriceNormalized = (float) ((lowPrice - meanLowPrices) / lowStandardDev);
+        Log.w(TAG, String.valueOf(lowPriceNormalized));
+
+        volumeQuantityNormalized = (float) ((volumeQuantity - meanVolumeQuantity) / volumeStandardDev);
+        Log.w(TAG, String.valueOf(volumeQuantityNormalized));
+
+        float predictedPrice = doInference((float)1.5300144, (float)1.49734975, (float)1.5300144, (float)1.55317365, (float)-0.78733775);
+
+        Log.w(TAG, "Predicted price: " + String.valueOf(predictedPrice));
+
     }
 
 }
