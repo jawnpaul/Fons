@@ -1,5 +1,7 @@
 package ng.org.knowit.fons.Utility;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 public class Calculations {
@@ -11,7 +13,6 @@ public class Calculations {
         double sum = 0;
         for (int i = 0; i <values.size() ; i++) {
             sum+=values.get(i);
-
         }
         double mean = sum / values.size();
         return mean;
@@ -20,21 +21,32 @@ public class Calculations {
 
     public static double calculateStandardDeviation(ArrayList<Double> values){
 
-        if(values.size() == 0) return 0;
+        if (values.size() == 0) {
+            return 0;
+        }
 
+        double dv = 0;
         double sum = 0;
         double mean = calculateMean(values);
 
-
-        for (int i = 0; i <values.size() ; i++) {
-
-            sum += Math.pow((values.get(i) - mean),2);
-
+        //Log.w("Calculations: ", String.valueOf(mean) );
+        for (double d : values) {
+            double dm = Math.abs(d - mean);
+            dv += Math.pow(dm, 2);
         }
-        double squaredDifferenceMean = (sum) / (values.size());
-        double standardDeviation = (Math.sqrt(squaredDifferenceMean));
 
-        return standardDeviation;
+        double sd = Math.sqrt(dv / values.size());
+        //System.out.println("Standard dev is " + sd);
+
+        return sd;
+    }
+
+    public static double summ(ArrayList<Double> values){
+        double sum = 0;
+        for (double number:values) {
+            sum+= number;
+        }
+        return sum;
     }
 
 }

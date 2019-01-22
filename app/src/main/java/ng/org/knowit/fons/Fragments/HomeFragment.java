@@ -120,7 +120,7 @@ public class HomeFragment extends Fragment {
 
     private double openPrice, highPrice, lowPrice, volumeQuantity, currentPrice;
 
-    private float openPriceNormalized, lowPriceNormalized, highPriceNormalized, currentPriceNormalized, volumeQuantityNormalized;
+    //private float openPriceNormalized, lowPriceNormalized, highPriceNormalized, currentPriceNormalized, volumeQuantityNormalized;
 
     TextView priceTextView, openPriceTextView, highPriceTextView,
             lowPriceTextView, volumeTextView, changePercentTextView;
@@ -167,7 +167,7 @@ public class HomeFragment extends Fragment {
         CompanyDbHelper dbHelper = new CompanyDbHelper(mContext);
         mSQLiteDatabase = dbHelper.getWritableDatabase();
 
-        mCursor = getSpecificCompany();
+        mCursor = getSpecificCompany(spinnerPosition);
         mCompanyAdapter = new CompanyAdapter(mContext, mCursor);
 
 
@@ -199,6 +199,8 @@ public class HomeFragment extends Fragment {
 
         mProgressBar = view.findViewById(R.id.home_progress_bar);
 
+        spinnerPosition = companySpinner.getSelectedItemPosition();
+
         ArrayAdapter<String> companyNamesAdapter = new ArrayAdapter<String>(getActivity(),  android.R.layout.simple_spinner_item, companyNames);
         companyNamesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         companySpinner.setAdapter(companyNamesAdapter);
@@ -206,7 +208,6 @@ public class HomeFragment extends Fragment {
         companySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
 
                 selectedSpinner();
             }
@@ -222,7 +223,7 @@ public class HomeFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                apiTimeSeriesCall();
+                apiTimeSeriesCall(MICROSOFT_SYMBOL);
                 //Toast.makeText(getContext(), String.valueOf(doInference()), Toast.LENGTH_SHORT).show();
             }
         });
@@ -313,22 +314,27 @@ public class HomeFragment extends Fragment {
                 break;
             case 1:
                 //makeApiCall(GOOGLE_SYMBOL);
-
+                //apiTimeSeriesCall(GOOGLE_SYMBOL);
                 break;
             case 2:
                 //makeApiCall(TESLA_SYMBOL);
+                //apiTimeSeriesCall(TESLA_SYMBOL);
                 break;
             case 3:
                 //makeApiCall(WALMART_SYMBOL);
+                //apiTimeSeriesCall(WALMART_SYMBOL);
                 break;
             case 4:
                // makeApiCall(PZ_SYMBOL);
+                apiTimeSeriesCall(PZ_SYMBOL);
                 break;
             case 5:
               //  makeApiCall(APPLE_SYMBOL);
+               // apiTimeSeriesCall(APPLE_SYMBOL);
                 break;
             case 6:
               //  makeApiCall(GOLDMAN_SYMBOL);
+                //apiTimeSeriesCall(GOLDMAN_SYMBOL);
                 break;
 
                 default:
@@ -564,7 +570,7 @@ public class HomeFragment extends Fragment {
         mCompanyAdapter.swappCursor(mCursor);
     }
 
-    private void updateCompany(String companySymbol, String companyOpen,
+    private void updateCompany(int spinnerPosition, String companySymbol, String companyOpen,
             String companyHigh, String companyLow, String companyPrice, String companyVolume,
             String companyLatestTradingDay, String companyPreviousClose, String companyChange,
             String companyChangePercent){
@@ -580,17 +586,20 @@ public class HomeFragment extends Fragment {
         cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE, companyChange);
         cv.put(CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE_PERCENT, companyChangePercent);
 
+        Uri uriForCompany = CompanyContract.buildSingleCompany(spinnerPosition + 1);
+        CompanyUpdateService.updateCompany(mContext, uriForCompany, cv);
+
         //CompanyUpdateService.updateCompany(mContext, CompanyContract.getColumnLong(null, null));
     }
 
-    private Cursor getSpecificCompany(){
+    private Cursor getSpecificCompany(int spinnerPosition){
        /* String id = "1";
 
         Uri uri = CompanyContract.CONTENT_URI;
         uri = uri.buildUpon().appendPath(id).build();*/
 
         Log.d(TAG1, CompanyContract.buildSingleCompany(6).toString());
-        return mContext.getContentResolver().query(CompanyContract.buildSingleCompany(6),
+        return mContext.getContentResolver().query(CompanyContract.buildSingleCompany(spinnerPosition + 1),
                 null,
                 null,
                 null,
@@ -621,7 +630,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void apiTimeSeriesCall(){
+    private void apiTimeSeriesCall(String symbol){
 
         if (!isOnline()) {
 
@@ -634,7 +643,6 @@ public class HomeFragment extends Fragment {
 
         ApiInterface apiInterface = ApiClient.getStockTimeSeries().create(ApiInterface.class);
 
-        String symbol = "MSFT";
         Call<TimeSeriesQuote> callToApi = apiInterface.getCompanyTimeSeries(TIME_SERIES_DAILY,symbol, "compact", API_KEY);
 
         callToApi.enqueue(new Callback<TimeSeriesQuote>() {
@@ -684,51 +692,67 @@ public class HomeFragment extends Fragment {
 
         for (JsonElement jsonElement : individualItems ) {
             double open = Double.parseDouble(jsonElement.getAsJsonObject().get("1. open").getAsString());
+            //Log.w(TAG, " Open is "+String.valueOf(open));
             openList.add(open);
-            openList.add(openPrice);
+
             double high = Double.parseDouble(jsonElement.getAsJsonObject().get("2. high").getAsString());
             highList.add(high);
-            highList.add(highPrice);
+
             double low = Double.parseDouble(jsonElement.getAsJsonObject().get("3. low").getAsString());
             lowList.add(low);
-            lowList.add(lowPrice);
+
             double close = Double.parseDouble(jsonElement.getAsJsonObject().get("4. close").getAsString());
             closeList.add(close);
-            closeList.add(currentPrice);
+
             double volume = Double.parseDouble(jsonElement.getAsJsonObject().get("5. volume").getAsString());
             volumeList.add(volume);
-            volumeList.add(volumeQuantity);
 
         }
 
+        openList.add(openPrice);
+        highList.add(highPrice);
+        lowList.add(lowPrice);
+        closeList.add(currentPrice);
+        volumeList.add(volumeQuantity);
+
         double meanOpenPrices = Calculations.calculateMean(openList);
+        Log.w(TAG, "Mean open"+ String.valueOf(meanOpenPrices));
         double meanHighPrices = Calculations.calculateMean(highList);
+        Log.w(TAG, "Mean high"+String.valueOf(meanHighPrices));
         double meanLowPrices = Calculations.calculateMean(lowList);
+        Log.w(TAG, "Mean low"+String.valueOf(meanLowPrices));
         double meanClosePrices = Calculations.calculateMean(closeList);
+        Log.w(TAG, "Mean close"+String.valueOf(meanClosePrices));
         double meanVolumeQuantity = Calculations.calculateMean(volumeList);
+        Log.w(TAG, "Mean volume"+String.valueOf(meanVolumeQuantity));
 
         double openStandardDev = Calculations.calculateStandardDeviation(openList);
+        Log.w(TAG, "std open"+ String.valueOf(openStandardDev));
         double highStandardDev = Calculations.calculateStandardDeviation(highList);
+        Log.w(TAG, "std high "+ String.valueOf(highStandardDev));
         double lowStandardDev = Calculations.calculateStandardDeviation(lowList);
+        Log.w(TAG, "std low "+ String.valueOf(lowStandardDev));
         double closeStandardDev = Calculations.calculateStandardDeviation(closeList);
+        Log.w(TAG, "std close "+ String.valueOf(closeStandardDev));
         double volumeStandardDev = Calculations.calculateStandardDeviation(volumeList);
+        Log.w(TAG, "std vol "+ String.valueOf(volumeStandardDev));
 
-        openPriceNormalized = (float) ((openPrice - meanOpenPrices) / openStandardDev);
+        float openPriceNormalized = (float) ((Double.parseDouble(openPriceText) - Calculations.calculateMean(openList)) / Calculations.calculateStandardDeviation(openList));
         Log.w(TAG, String.valueOf(openPriceNormalized));
 
-        currentPriceNormalized = (float) ((currentPrice - meanClosePrices) / closeStandardDev);
+       float  currentPriceNormalized = (float) ((currentPrice - meanClosePrices) / closeStandardDev);
         Log.w(TAG, String.valueOf(currentPriceNormalized));
 
-        highPriceNormalized = (float) ((highPrice - meanHighPrices) / highStandardDev);
+       float highPriceNormalized = (float) ((highPrice - meanHighPrices) / highStandardDev);
         Log.w(TAG, String.valueOf(highPriceNormalized));
 
-        lowPriceNormalized = (float) ((lowPrice - meanLowPrices) / lowStandardDev);
+        float lowPriceNormalized = (float) ((lowPrice - meanLowPrices) / lowStandardDev);
         Log.w(TAG, String.valueOf(lowPriceNormalized));
 
-        volumeQuantityNormalized = (float) ((volumeQuantity - meanVolumeQuantity) / volumeStandardDev);
+        float volumeQuantityNormalized = (float) ((volumeQuantity - meanVolumeQuantity) / volumeStandardDev);
         Log.w(TAG, String.valueOf(volumeQuantityNormalized));
 
-        float predictedPrice = doInference((float)1.5300144, (float)1.49734975, (float)1.5300144, (float)1.55317365, (float)-0.78733775);
+        float predictedPrice = doInference(openPriceNormalized, highPriceNormalized, lowPriceNormalized, currentPriceNormalized, volumeQuantityNormalized);
 
         Log.w(TAG, "Predicted price: " + String.valueOf(predictedPrice));
 

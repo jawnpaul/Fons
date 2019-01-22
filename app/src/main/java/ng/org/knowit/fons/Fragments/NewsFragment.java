@@ -243,31 +243,6 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
                 updateNews(i, author, title, description, content, publishedAt, url, urlToImage );
             }
 
-            /*new Thread(new Runnable(){
-                @Override
-                public void run() {
-                    try {
-                        // Your implementation
-
-                        Bitmap imageBitmap = ImageUtility.getBitmapFromURL(finalUrlToImage);
-                        byte[] imageByteArray = ImageUtility.getByteArrayFromBitmap(imageBitmap);
-
-                        Log.d(TAG, "Bitmap of image gotten "+ finalI);
-
-                        if(mCursor.getCount() <= 0){
-                            saveNewsToDatabase(author, title, description, content, publishedAt, url, imageByteArray);
-                        } else {
-                            updateNews(finalI, author, title, description, content, publishedAt, url, imageByteArray );
-                        }
-                    }
-                    catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }).start();*/
-
-
-
 
         }
     }
@@ -364,7 +339,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
         contentValues.put(NewsContract.NewsEntry.COLUMN_URL, url);
         contentValues.put(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE, imageUrl);
 
-        NewsUpdateService.updateCompany(mContext, uriForNewsItem, contentValues);
+        NewsUpdateService.updateNewsItem(mContext, uriForNewsItem, contentValues);
 
     }
 

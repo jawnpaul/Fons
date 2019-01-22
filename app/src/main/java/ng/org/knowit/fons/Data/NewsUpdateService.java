@@ -26,7 +26,7 @@ public class NewsUpdateService extends IntentService {
     }
 
 
-    public static void updateCompany(Context context, Uri uri, ContentValues values) {
+    public static void updateNewsItem(Context context, Uri uri, ContentValues values) {
         Intent intent = new Intent(context, NewsUpdateService.class);
         intent.setAction(ACTION_UPDATE);
         intent.setData(uri);
