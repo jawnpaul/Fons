@@ -33,8 +33,8 @@ public class TimeSeriesQuote {
         this.results = results;
     }
 
-    public List<JsonElement> parseValues(JsonObject valuesObject) {
-        List<JsonElement> result = new ArrayList<>();
+    public ArrayList<JsonElement> parseValues(JsonObject valuesObject) {
+        ArrayList<JsonElement> result = new ArrayList<>();
 
         for (Map.Entry<String, JsonElement> valueEntry : valuesObject.entrySet()) {
             JsonElement element = valueEntry.getValue();

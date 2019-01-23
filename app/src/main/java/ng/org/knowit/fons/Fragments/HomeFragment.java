@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -32,13 +31,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -52,7 +51,6 @@ import ng.org.knowit.fons.Data.CompanyDbHelper;
 import ng.org.knowit.fons.Data.CompanyUpdateService;
 import ng.org.knowit.fons.Main2Activity;
 import ng.org.knowit.fons.Models.GlobalQuote;
-import ng.org.knowit.fons.Models.TimeSeriesItem;
 import ng.org.knowit.fons.Models.TimeSeriesQuote;
 import ng.org.knowit.fons.R;
 import ng.org.knowit.fons.Rest.ApiClient;
@@ -101,6 +99,8 @@ public class HomeFragment extends Fragment {
 
     private String[] companyNames;
 
+    static ArrayList<JsonElement> allItems = new ArrayList<>();
+
     private SQLiteDatabase mSQLiteDatabase;
 
     private int spinnerPosition;
@@ -125,7 +125,7 @@ public class HomeFragment extends Fragment {
     TextView priceTextView, openPriceTextView, highPriceTextView,
             lowPriceTextView, volumeTextView, changePercentTextView;
     String priceText, openPriceText, highPriceText, lowPriceText, volumeText, changePercentText, symbolText,
-    latestTradingDayText, prevousDayCloseText, changeText;
+    latestTradingDayText, previousDayCloseText, changeText;
 
 
     //private OnFragmentInteractionListener mListener;
@@ -169,6 +169,13 @@ public class HomeFragment extends Fragment {
 
         mCursor = getSpecificCompany(spinnerPosition);
         mCompanyAdapter = new CompanyAdapter(mContext, mCursor);
+
+        String myjson = inputStreamToString(mContext.getResources().openRawResource(R.raw.my_json));
+
+        TimeSeriesQuote myModel = new Gson().fromJson(myjson, TimeSeriesQuote.class);
+
+        allItems = myModel.parseValues(myModel.getResults());
+        Log.w(TAG, "size from local json "+String.valueOf(allItems.size()));
 
 
         try {
@@ -243,7 +250,7 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         toolbar = view.findViewById(R.id.toolbar);
 
-        ViewPager vpPager = (ViewPager) view.findViewById(R.id.vpPager);
+        ViewPager vpPager = view.findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
         vpPager.setAdapter(adapterViewPager);
         insertNestedFragment();
@@ -365,23 +372,16 @@ public class HomeFragment extends Fragment {
                     oneDayFragment = OneDayFragment.newInstance("Page zero",0);
                     Bundle f_bundle = oneDayFragment.getArguments();
                     String f_param1 = f_bundle.getString("param1");
-                    int f_param2 = f_bundle.getInt("param2");
-                   // Log.d("Home Fragment", f_param1 +" " + f_param2);
-                    //return OneDayFragment.newInstance("Page zero", 0);
                     break;
                 case 1: // Fragment # 0 - This will show FirstFragment different title
-                    //Log.d("Home Fragment", "Second fragment has loaded");
                     oneDayFragment = OneDayFragment.newInstance("Page one",1);
-                    //Bundle s_bundle = oneDayFragment.getArguments();
-                   // String s_param1 = s_bundle.getString("param1");
-                    //int s_param2 = s_bundle.getInt("param2");
-                  //  Log.d("Home Fragment", s_param1 +" " + s_param2);
+
                     break;
-                    //return OneDayFragment.newInstance("Page one", 1);
+
                 case 2: // Fragment # 1 - This will show SecondFragment
 
                     oneDayFragment = OneDayFragment.newInstance("Page Two", 2);
-                    //Log.d("Home Fragment", "Third fragment has loaded");
+
                     break;
                 case 3:
                     oneDayFragment = OneDayFragment.newInstance("Page Three", 3);
@@ -391,7 +391,7 @@ public class HomeFragment extends Fragment {
                     oneDayFragment = OneDayFragment.newInstance("Page Four", 4);
                     break;
                 default:
-                    Log.d("Home Fragment", "Which one? fragment has loaded");
+                   // Log.d("Home Fragment", "Which one? fragment has loaded");
             }
             return oneDayFragment;
         }
@@ -501,11 +501,11 @@ public class HomeFragment extends Fragment {
                         changeText = globalQuote.getCompanyQuote().getChange();
                         symbolText = globalQuote.getCompanyQuote().getCompanySymbol();
                         latestTradingDayText = globalQuote.getCompanyQuote().getLatestTradingDay();
-                        prevousDayCloseText = globalQuote.getCompanyQuote().getPreviousClose();
+                        previousDayCloseText = globalQuote.getCompanyQuote().getPreviousClose();
                         updateViews();
 
                         addNewCompany(symbolText, openPriceText, highPriceText, lowPriceText,
-                                priceText, volumeText, latestTradingDayText, prevousDayCloseText, changeText, changePercentText);
+                                priceText, volumeText, latestTradingDayText, previousDayCloseText, changeText, changePercentText);
 
 
                         //Toast.makeText(getActivity(), "Open price is "+ globalQuote.getCompanyQuote().getOpenPrice(), Toast.LENGTH_LONG).show();
@@ -666,7 +666,7 @@ public class HomeFragment extends Fragment {
                     }
                     displayMessage(errorTitle, errorMessage);
                 } else {
-                    List<JsonElement> individualItems =  timeSeriesQuote.parseValues(timeSeriesQuote.getResults());
+                    ArrayList<JsonElement> individualItems =  timeSeriesQuote.parseValues(timeSeriesQuote.getResults());
 
                     getStockTimeSeries(individualItems);
                 }
@@ -683,17 +683,21 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void getStockTimeSeries(List<JsonElement> individualItems){
+    private void getStockTimeSeries(ArrayList<JsonElement> individualItems){
         ArrayList<Double> openList = new ArrayList<>();
         ArrayList<Double> highList = new ArrayList<>();
         ArrayList<Double> lowList = new ArrayList<>();
         ArrayList<Double> closeList = new ArrayList<>();
         ArrayList<Double> volumeList = new ArrayList<>();
 
+
+        allItems.addAll(individualItems);
+
         for (JsonElement jsonElement : individualItems ) {
             double open = Double.parseDouble(jsonElement.getAsJsonObject().get("1. open").getAsString());
             //Log.w(TAG, " Open is "+String.valueOf(open));
             openList.add(open);
+
 
             double high = Double.parseDouble(jsonElement.getAsJsonObject().get("2. high").getAsString());
             highList.add(high);
@@ -758,6 +762,27 @@ public class HomeFragment extends Fragment {
 
     }
 
+
+    private String inputStreamToString(InputStream inputStream){
+        try {
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes, 0, bytes.length);
+            String json = new String(bytes);
+            return json;
+        } catch (IOException e){
+            return null;
+        }
+    }
+
+
+
+
+
+
+
+    /*public void setAllItems(ArrayList<JsonElement> allItems) {
+        HomeFragment.allItems = myModel.parseValues(myModel.getResults());
+    }*/
 }
 
 

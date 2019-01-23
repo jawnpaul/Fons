@@ -12,6 +12,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import ng.org.knowit.fons.Models.TimeSeriesQuote;
 import ng.org.knowit.fons.R;
 
 /**
@@ -24,11 +37,16 @@ public class OneDayFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM3 = "dataList";
+    private static final String TAG = OneDayFragment.class.getSimpleName();
+
+    private  List<Entry> entries = new ArrayList<Entry>();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private int mParam2;
     private  String mad;
+    private ArrayList<JsonElement> dataList;
 
     private TextView mTextView;
 
@@ -57,9 +75,12 @@ public class OneDayFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static OneDayFragment newInstance(String param1, int param2) {
         OneDayFragment fragment = new OneDayFragment();
+
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putInt(ARG_PARAM2, param2);
+
+        //args.putSerializable(ARG_PARAM3, dataList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,6 +92,22 @@ public class OneDayFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getInt(ARG_PARAM2);
 
+            String myjson = inputStreamToString(getContext().getResources().openRawResource(R.raw.my_json));
+
+            TimeSeriesQuote myModel = new Gson().fromJson(myjson, TimeSeriesQuote.class);
+
+            dataList = myModel.parseValues(myModel.getResults());
+            Log.w(TAG, "size from local json "+String.valueOf(dataList.size()));
+
+
+            for (float i = 0; i < dataList.size(); i++) {
+                JsonElement data = dataList.get((int) i);
+                entries.add(new Entry(i, Float.parseFloat(data.getAsJsonObject().get("4. close").getAsString())));
+            }
+
+
+
+            //dataList = (ArrayList<JsonElement>) getArguments().getSerializable(ARG_PARAM3);
             Log.d("One Day Fragment:param1", mParam1);
             //Toast.makeText(getActivity(), mParam1, Toast.LENGTH_SHORT).show();
 
@@ -99,10 +136,30 @@ public class OneDayFragment extends Fragment {
 
         TextView tvLabel = (TextView) view.findViewById(R.id.textViewHelloOneDay);
 
+        LineChart lineChart = view.findViewById(R.id.lineChart);
+
         mTextView = view.findViewById(R.id.textViewPageTitle);
         mTextView.setText(mParam1);
-        //tvLabel.setText(mParam1 + " -- " + mParam2);
-       // TextView name = view.findViewById(R.id.textViewOneDay);
-        //name.setText("adede");
+
+        LineDataSet dataSet = new LineDataSet(entries, "prices"); // add entries to dataset
+        dataSet.setColor(R.color.colorAccent);
+        dataSet.setValueTextColor(R.color.colorAccent);
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+        //lineChart.invalidate();
+
+    }
+
+    private String inputStreamToString(InputStream inputStream){
+        try {
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes, 0, bytes.length);
+            String json = new String(bytes);
+            return json;
+        } catch (IOException e){
+            return null;
+        }
+
+
     }
 }
