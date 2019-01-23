@@ -223,7 +223,7 @@ public class HomeFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                apiTimeSeriesCall(MICROSOFT_SYMBOL);
+                apiTimeSeriesCall(GOOGLE_SYMBOL);
                 //Toast.makeText(getContext(), String.valueOf(doInference()), Toast.LENGTH_SHORT).show();
             }
         });
@@ -310,10 +310,10 @@ public class HomeFragment extends Fragment {
         spinnerPosition = companySpinner.getSelectedItemPosition();
         switch (spinnerPosition){
             case 0:
-                makeApiCall(MICROSOFT_SYMBOL);
+                //makeApiCall(MICROSOFT_SYMBOL);
                 break;
             case 1:
-                //makeApiCall(GOOGLE_SYMBOL);
+                makeApiCall(GOOGLE_SYMBOL);
                 //apiTimeSeriesCall(GOOGLE_SYMBOL);
                 break;
             case 2:
