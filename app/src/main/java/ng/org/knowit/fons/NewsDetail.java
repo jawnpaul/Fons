@@ -7,8 +7,10 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +25,8 @@ public class NewsDetail extends AppCompatActivity {
     NewsItem mNewsItem;
     TextView newsTitleTextView, newsContentTextView, newsAuthorTextView;
     ImageView newsImageView;
+
+    private String newssContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,7 @@ public class NewsDetail extends AppCompatActivity {
             setUpViews(mNewsItem);
         } else if (intent != null ){
             newsAuthorTextView.setText(intent.getStringExtra("author"));
+            newssContent = intent.getStringExtra("newsContent");
             newsContentTextView.setText(intent.getStringExtra("newsContent"));
             newsTitleTextView.setText(intent.getStringExtra("newsTitle"));
             GlideApp.with(this).load(intent.getStringExtra("newsImageUrl")).into(newsImageView);
@@ -52,8 +57,11 @@ public class NewsDetail extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, newssContent);
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, "Share to"));
             }
         });
 
@@ -101,6 +109,7 @@ public class NewsDetail extends AppCompatActivity {
         newsTitleTextView.setText(newsTitle);
 
         String newsContent = newsItem.getContent();
+        newssContent = newsContent;
         newsContentTextView.setText(newsContent);
 
         String newsAuthor = newsItem.getAuthor();
