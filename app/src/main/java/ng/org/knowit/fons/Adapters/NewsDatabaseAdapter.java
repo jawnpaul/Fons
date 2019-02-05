@@ -59,6 +59,7 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
 
 
 
+
         holder.authorTextView.setText(author);
         holder.titleTextView.setText(title);
         GlideApp.with(mContext)
@@ -104,6 +105,7 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
         int indexTitle = singleCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_TITLE);
         int indexContent = singleCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_CONTENT);
         int indexImageUrl = singleCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE);
+        int indexNewsUrl  = singleCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_URL);
 
 
         if (singleCursor != null) {
@@ -114,8 +116,9 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
                 String title = singleCursor.getString(indexTitle);
                 String content = singleCursor.getString(indexContent);
                 String imageUrl = singleCursor.getString(indexImageUrl);
+                String newsUrl = singleCursor.getString(indexNewsUrl);
 
-                sendIntentForNewsDetail(author, content, title, imageUrl);
+                sendIntentForNewsDetail(author, content, title, imageUrl, newsUrl);
 
                 // end of while loop
             }
@@ -142,12 +145,13 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
 
     }
 
-    private void sendIntentForNewsDetail(String author, String content, String title, String imageUrl){
+    private void sendIntentForNewsDetail(String author, String content, String title, String imageUrl, String newsUrl){
         Bundle bundle = new Bundle();
         bundle.putString("author", author);
         bundle.putString("newsContent", content);
         bundle.putString("newsTitle", title);
         bundle.putString("newsImageUrl", imageUrl);
+        bundle.putString("newsUrl", newsUrl);
 
 
         Intent intent = new Intent(mContext, NewsDetail.class);
