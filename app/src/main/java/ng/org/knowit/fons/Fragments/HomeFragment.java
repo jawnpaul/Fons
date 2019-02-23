@@ -109,6 +109,8 @@ public class HomeFragment extends Fragment {
 
     private Cursor mCursor;
 
+    private ViewPager mPager;
+
     Context mContext;
 
     Toolbar toolbar;
@@ -249,13 +251,13 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         toolbar = view.findViewById(R.id.toolbar);
 
-        ViewPager vpPager = view.findViewById(R.id.vpPager);
+        mPager = view.findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
-        vpPager.setAdapter(adapterViewPager);
+        mPager.setAdapter(adapterViewPager);
         insertNestedFragment();
 
 
-        vpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset,
                     int positionOffsetPixels) {
@@ -295,10 +297,12 @@ public class HomeFragment extends Fragment {
                 if (scrollRange + verticalOffset == 0) {
                     collapsingToolbarLayout.setTitle(" ");
                     pagerTabStrip.setVisibility(View.INVISIBLE);
+                    mPager.setVisibility(View.INVISIBLE);
 
                 } else {
                     collapsingToolbarLayout.setTitle(" ");
                     pagerTabStrip.setVisibility(View.VISIBLE);
+                    mPager.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -740,7 +744,7 @@ public class HomeFragment extends Fragment {
         double volumeStandardDev = Calculations.calculateStandardDeviation(volumeList);
         Log.w(TAG, "std vol "+ String.valueOf(volumeStandardDev));
 
-        float openPriceNormalized = (float) ((Double.parseDouble(openPriceText) - Calculations.calculateMean(openList)) / Calculations.calculateStandardDeviation(openList));
+        float openPriceNormalized = (float) ((openPrice - Calculations.calculateMean(openList)) / Calculations.calculateStandardDeviation(openList));
         Log.w(TAG, String.valueOf(openPriceNormalized));
 
        float  currentPriceNormalized = (float) ((currentPrice - meanClosePrices) / closeStandardDev);

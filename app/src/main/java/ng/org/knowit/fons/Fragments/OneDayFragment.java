@@ -99,7 +99,7 @@ public class OneDayFragment extends Fragment {
             Log.w(TAG, "size from local json "+String.valueOf(dataList.size()));
 
 
-            for (float i = 0; i < dataList.size(); i++) {
+            for (float i =0; i <dataList.size();i++) {
                 JsonElement data = dataList.get((int) i);
                 entries.add(new Entry(i, Float.parseFloat(data.getAsJsonObject().get("4. close").getAsString())));
             }
@@ -141,8 +141,8 @@ public class OneDayFragment extends Fragment {
         mTextView.setText(mParam1);
 
         LineDataSet dataSet = new LineDataSet(entries, "prices"); // add entries to dataset
-        dataSet.setColor(R.color.colorAccent);
-        dataSet.setValueTextColor(R.color.colorAccent);
+        dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
+        dataSet.setValueTextColor(getResources().getColor(R.color.colorPrimaryDark));
         LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
         //lineChart.invalidate();
