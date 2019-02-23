@@ -6,9 +6,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 public class CompanyUpdateService extends IntentService {
     private static final String TAG = CompanyUpdateService.class.getSimpleName();
