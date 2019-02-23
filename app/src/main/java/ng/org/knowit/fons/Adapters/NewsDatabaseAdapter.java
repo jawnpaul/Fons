@@ -60,9 +60,8 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
         holder.titleTextView.setText(title);
         GlideApp.with(mContext)
                 .load(newsImageUrl)
-                //TODO: Change the drawable for placeholder(while image is still loading) and error
-                .placeholder(R.drawable.app_installation)
-                .error(R.drawable.ic_menu)
+                .placeholder(R.drawable.picture_loading)
+                .error(R.drawable.error)
                 .onlyRetrieveFromCache(true)
                 .into(holder.newsImageView);
 

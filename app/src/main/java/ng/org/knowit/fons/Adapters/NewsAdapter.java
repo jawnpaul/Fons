@@ -101,9 +101,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
                 GlideApp.with(mContext)
                         .asBitmap()
                         .load(imageUrl)
-                        //TODO: Change the drawable for placeholder(while image is still loading) and error
-                        .placeholder(R.drawable.app_installation)
-                        .error(R.drawable.ic_menu)
+                        .placeholder(R.drawable.picture_loading)
+                        .error(R.drawable.error)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .listener(new RequestListener<Bitmap>() {
                             @Override
