@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
 
 
 
-    private final String TAG = NewsDatabaseAdapter.class.getCanonicalName();
+    private final String TAG = NewsDatabaseAdapter.class.getSimpleName();
     private final Context mContext;
     private Cursor mCursor;
 
@@ -101,6 +102,7 @@ public class NewsDatabaseAdapter extends RecyclerView.Adapter<NewsDatabaseAdapte
         int indexContent = singleCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_CONTENT);
         int indexImageUrl = singleCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_URL_TO_IMAGE);
         int indexNewsUrl  = singleCursor.getColumnIndex(NewsContract.NewsEntry.COLUMN_URL);
+
 
 
         if (singleCursor != null) {

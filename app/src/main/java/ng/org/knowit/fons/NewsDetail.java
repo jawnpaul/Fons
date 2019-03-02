@@ -45,7 +45,13 @@ public class NewsDetail extends AppCompatActivity {
             newsUrl = intent.getStringExtra("newsUrl");
             newsContentTextView.setText(intent.getStringExtra("newsContent"));
             newsTitleTextView.setText(intent.getStringExtra("newsTitle"));
-            GlideApp.with(this).load(intent.getStringExtra("newsImageUrl")).into(newsImageView);
+            //GlideApp.with(this).load(intent.getStringExtra("newsImageUrl")).into(newsImageView);
+            GlideApp.with(this)
+                    .load(intent.getStringExtra("newsImageUrl"))
+                    .placeholder(R.drawable.picture_loading)
+                    .error(R.drawable.error)
+                    .onlyRetrieveFromCache(true)
+                    .into(newsImageView);
 
         }
 
