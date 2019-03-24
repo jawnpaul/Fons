@@ -16,6 +16,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,6 +76,8 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
     private SQLiteDatabase mSQLiteDatabase;
     private  Cursor mCursor;
 
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
 
     Toolbar toolbar;
     ProgressBar mProgressBar;
@@ -129,7 +133,9 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         mRecyclerView = view.findViewById(R.id.newsRecyclerView);
 
-        if (isOnline() ){
+        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+
+        if (isOnline() &&  mCursor.getCount() <= 0){
             makeApiCall();
             mProgressBar = view.findViewById(R.id.news_progress_bar);
         } else{
@@ -137,6 +143,15 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
             loadNewsFromDatabase();
         }
 
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                makeApiCall();
+
+            }
+        });
 
 
     return view;
@@ -178,7 +193,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
             public void onResponse(Call<NewsQuote> call, Response<NewsQuote> response) {
                 NewsQuote newsQuote = response.body();
 
-                mProgressBar.setVisibility(View.INVISIBLE);
+                //mProgressBar.setVisibility(View.INVISIBLE);
 
                 if (newsQuote == null) {
 
@@ -199,7 +214,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     mNewsAdapter = new NewsAdapter(getActivity(), newsQuote.getResults(), NewsFragment.this);
                     mRecyclerView.setAdapter(mNewsAdapter);
-
+                    mSwipeRefreshLayout.setRefreshing(false);
 
                     Log.d(TAG, String.valueOf(newsQuote.getResults().size()));
 
@@ -210,7 +225,8 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
 
             @Override
             public void onFailure(Call<NewsQuote> call, Throwable t) {
-                mProgressBar.setVisibility(View.INVISIBLE);
+                //mProgressBar.setVisibility(View.INVISIBLE);
+                mSwipeRefreshLayout.setRefreshing(false);
                 String errorTitle = "Error";
                 String errorMessage = "Data request failed.";
                 displayMessage(errorTitle, errorMessage);
@@ -231,10 +247,6 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
             final String url = newsItem.getUrl();
             String urlToImage = newsItem.getUrlToImage();
 
-
-
-           /* final String finalUrlToImage = urlToImage;
-            final int finalI = i;*/
 
             if(mCursor.getCount() <= 0){
                 saveNewsToDatabase(author, title, description, content, publishedAt, url, urlToImage);
@@ -265,10 +277,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
         }
 
 
-
     }
-
-
 
 
     private boolean isOnline() {

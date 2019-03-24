@@ -31,6 +31,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -231,7 +232,7 @@ public class HomeFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                apiTimeSeriesCall(GOOGLE_SYMBOL);
+                apiTimeSeriesCall(MICROSOFT_SYMBOL);
                 //Toast.makeText(getContext(), String.valueOf(doInference()), Toast.LENGTH_SHORT).show();
             }
         });
@@ -320,30 +321,30 @@ public class HomeFragment extends Fragment {
         spinnerPosition = companySpinner.getSelectedItemPosition();
         switch (spinnerPosition){
             case 0:
-                //makeApiCall(MICROSOFT_SYMBOL);
+                makeApiCall(MICROSOFT_SYMBOL);
                 break;
             case 1:
                 makeApiCall(GOOGLE_SYMBOL);
                 //apiTimeSeriesCall(GOOGLE_SYMBOL);
                 break;
             case 2:
-                //makeApiCall(TESLA_SYMBOL);
+                makeApiCall(TESLA_SYMBOL);
                 //apiTimeSeriesCall(TESLA_SYMBOL);
                 break;
             case 3:
-                //makeApiCall(WALMART_SYMBOL);
+                makeApiCall(WALMART_SYMBOL);
                 //apiTimeSeriesCall(WALMART_SYMBOL);
                 break;
             case 4:
-               // makeApiCall(PZ_SYMBOL);
-                apiTimeSeriesCall(PZ_SYMBOL);
+                makeApiCall(PZ_SYMBOL);
+                //apiTimeSeriesCall(PZ_SYMBOL);
                 break;
             case 5:
-              //  makeApiCall(APPLE_SYMBOL);
+                makeApiCall(APPLE_SYMBOL);
                // apiTimeSeriesCall(APPLE_SYMBOL);
                 break;
             case 6:
-              //  makeApiCall(GOLDMAN_SYMBOL);
+                makeApiCall(GOLDMAN_SYMBOL);
                 //apiTimeSeriesCall(GOLDMAN_SYMBOL);
                 break;
 
@@ -763,6 +764,10 @@ public class HomeFragment extends Fragment {
 
         Log.w(TAG, "Predicted price: " + String.valueOf(predictedPrice));
 
+       String companyName =  companyName(spinnerPosition);
+
+        Toast.makeText(mContext, companyName + " /predicted price is " + String.valueOf(predictedPrice), Toast.LENGTH_LONG).show();
+
     }
 
 
@@ -778,7 +783,33 @@ public class HomeFragment extends Fragment {
     }
 
 
+private String companyName(int spinnerPosition){
+        String companyName = "";
+        switch (spinnerPosition){
+            case 0:
+                companyName = "Microsoft";
+                break;
+            case 1:
+                companyName = "Google";
+                break;
+            case 2:
+                companyName = "Tesla";
+                break;
+            case 3:
+                companyName = "Wal-mart";
+                break;
+            case 4:
+                companyName = "PZ - Industries";
+                break;
+            case 5:
+                companyName = "Apple";
+                break;
+            case 6:
+                companyName = "Goldman Sachs";
 
+        }
+        return companyName;
+}
 
 
 

@@ -158,7 +158,7 @@ public class Main2Activity extends AppCompatActivity
     }
 
     public void setToolbar(Toolbar toolbar) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if(toolbar != null) {
             setSupportActionBar(toolbar);
 
@@ -167,7 +167,7 @@ public class Main2Activity extends AppCompatActivity
             drawer.setDrawerListener(toggle);
             toggle.syncState();
         } else {
-            drawer.setDrawerListener(null);
+             drawer.setDrawerListener(null);
         }
     }
 
