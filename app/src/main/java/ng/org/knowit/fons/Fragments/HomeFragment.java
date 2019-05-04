@@ -263,7 +263,7 @@ public class HomeFragment extends Fragment {
         mPager = view.findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
         mPager.setAdapter(adapterViewPager);
-        insertNestedFragment();
+        //insertNestedFragment();
 
 
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -329,7 +329,7 @@ public class HomeFragment extends Fragment {
         spinnerPosition = companySpinner.getSelectedItemPosition();
         switch (spinnerPosition){
             case 0:
-                makeApiCall(MICROSOFT_SYMBOL);
+                //makeApiCall(MICROSOFT_SYMBOL);
                 break;
             case 1:
                 //singleCursor = getSingleCompany(spinnerPosition);
@@ -363,7 +363,7 @@ public class HomeFragment extends Fragment {
     }
 
     public static class MyPagerAdapter extends FragmentPagerAdapter {
-        private static int NUM_ITEMS = 5;
+        private static int NUM_ITEMS = 1;
 
         public MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
@@ -386,7 +386,7 @@ public class HomeFragment extends Fragment {
                     Bundle f_bundle = oneDayFragment.getArguments();
                     String f_param1 = f_bundle.getString("param1");
                     break;
-                case 1: // Fragment # 0 - This will show FirstFragment different title
+                /*case 1: // Fragment # 0 - This will show FirstFragment different title
                     oneDayFragment = OneDayFragment.newInstance("Page one",1);
 
                     break;
@@ -402,7 +402,7 @@ public class HomeFragment extends Fragment {
                     //return OneDayFragment.newInstance("page two", 2);
                 case 4:
                     oneDayFragment = OneDayFragment.newInstance("Page Four", 4);
-                    break;
+                    break;*/
                 default:
                    // Log.d("Home Fragment", "Which one? fragment has loaded");
             }

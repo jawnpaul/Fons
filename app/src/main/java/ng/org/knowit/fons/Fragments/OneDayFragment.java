@@ -49,6 +49,12 @@ public class OneDayFragment extends Fragment {
 
     private TextView mTextView;
 
+    private TimeSeriesQuote myModel;
+
+    private static LineChart lineChart;
+
+    private String myjson;
+
    // private String title;
     //private int page;
 
@@ -91,19 +97,10 @@ public class OneDayFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getInt(ARG_PARAM2);
 
-            String myjson = inputStreamToString(getContext().getResources().openRawResource(R.raw.my_json));
 
-            TimeSeriesQuote myModel = new Gson().fromJson(myjson, TimeSeriesQuote.class);
+             myModel = new Gson().fromJson(myjson, TimeSeriesQuote.class);
 
-            dataList = myModel.parseValues(myModel.getResults());
-            Log.w(TAG, "size from local json "+String.valueOf(dataList.size()));
-
-
-            for (float i =0; i <dataList.size();i++) {
-                JsonElement data = dataList.get((int) i);
-                entries.add(new Entry(i, Float.parseFloat(data.getAsJsonObject().get("4. close").getAsString())));
-            }
-
+            myjson = inputStreamToString(getContext().getResources().openRawResource(R.raw.my_json));
 
 
             //dataList = (ArrayList<JsonElement>) getArguments().getSerializable(ARG_PARAM3);
@@ -133,18 +130,14 @@ public class OneDayFragment extends Fragment {
 
         //Toast.makeText(getActivity(), mParam1, Toast.LENGTH_SHORT).show();
 
+
         TextView tvLabel = (TextView) view.findViewById(R.id.textViewHelloOneDay);
 
-        LineChart lineChart = view.findViewById(R.id.lineChart);
+        lineChart = view.findViewById(R.id.lineChart);
 
         mTextView = view.findViewById(R.id.textViewPageTitle);
         mTextView.setText(mParam1);
-
-        LineDataSet dataSet = new LineDataSet(entries, "prices"); // add entries to dataset
-        dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
-        dataSet.setValueTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        LineData lineData = new LineData(dataSet);
-        lineChart.setData(lineData);
+        //createGraph(dataList);
         //lineChart.invalidate();
 
     }
@@ -160,5 +153,37 @@ public class OneDayFragment extends Fragment {
         }
 
 
+    }
+
+    public static void createGraph(ArrayList<JsonElement> dataListt){
+
+
+        ArrayList<Entry> entriess = new ArrayList<Entry>();
+
+        /*String myjson = myjson;
+
+
+
+        TimeSeriesQuote myModel = new Gson().fromJson(myjson, TimeSeriesQuote.class);
+
+        dataListt = myModel.parseValues(myModel.getResults());
+        Log.w(TAG, "size from local json "+String.valueOf(dataListt.size()));
+*/
+
+
+        for (float i =0; i <dataListt.size();i++) {
+            JsonElement data = dataListt.get((int) i);
+            entriess.add(new Entry(i, Float.parseFloat(data.getAsJsonObject().get("4. close").getAsString())));
+        }
+
+
+
+        LineDataSet dataSet = new LineDataSet(entriess, "prices"); // add entries to dataset
+        //dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
+        dataSet.setColor(0x000000);
+        dataSet.setValueTextColor(0x000000);
+        //dataSet.setValueTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
     }
 }
