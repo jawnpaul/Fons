@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment {
 
     private static final String GLOBAL_QUOTE = "GLOBAL_QUOTE";
     private static final String TIME_SERIES_DAILY = "TIME_SERIES_DAILY";
-    private static final String OUTPUT_SIZE = "full";
+    private static final String OUTPUT_SIZE = "compact";
     private static final String API_KEY = "FETXFXJ9VMMUJFE9";
     private static final String MICROSOFT_SYMBOL = "MSFT";
     private static final String GOOGLE_SYMBOL = "GOOGL";
@@ -95,7 +95,7 @@ public class HomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    Interpreter tflite;
+    Interpreter msTflite, googleTflite, teslaTflite, walmartTflite, pzTflite, appleTflite, gsTflite;
 
     private String[] companyNames;
 
@@ -183,13 +183,9 @@ public class HomeFragment extends Fragment {
         allItems = myModel.parseValues(myModel.getResults());
         Log.w(TAG, "size from local json "+String.valueOf(allItems.size()));
 
+        openCompaniesTflites();
 
-        try {
-            tflite = new Interpreter(loadModelFile());
-            Log.d(TAG, "model file loaded");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+
 
     }
 
@@ -236,7 +232,7 @@ public class HomeFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                apiTimeSeriesCall(MICROSOFT_SYMBOL);
+                apiTimeSeriesCall(companyName(spinnerPosition));
                 //Toast.makeText(getContext(), String.valueOf(doInference()), Toast.LENGTH_SHORT).show();
             }
         });
@@ -333,12 +329,12 @@ public class HomeFragment extends Fragment {
         spinnerPosition = companySpinner.getSelectedItemPosition();
         switch (spinnerPosition){
             case 0:
-                //makeApiCall(MICROSOFT_SYMBOL);
+                makeApiCall(MICROSOFT_SYMBOL);
                 break;
             case 1:
-                singleCursor = getSingleCompany(spinnerPosition);
-                //makeApiCall(GOOGLE_SYMBOL);
-                apiTimeSeriesCall(GOOGLE_SYMBOL);
+                //singleCursor = getSingleCompany(spinnerPosition);
+                makeApiCall(GOOGLE_SYMBOL);
+                //apiTimeSeriesCall(GOOGLE_SYMBOL);
                 break;
             case 2:
                 makeApiCall(TESLA_SYMBOL);
@@ -615,7 +611,25 @@ public class HomeFragment extends Fragment {
                 null);
     }
 
-    private MappedByteBuffer loadModelFile() throws IOException {
+    private MappedByteBuffer loadGoldmanModelFile() throws IOException {
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("gs_model.tflite");
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffSet = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffSet, declaredLength);
+    }
+
+    private MappedByteBuffer loadGoogleModelFile() throws IOException {
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("google_model.tflite");
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffSet = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffSet, declaredLength);
+    }
+
+    private MappedByteBuffer loadMicrosoftModelFile() throws IOException {
         AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("model.tflite");
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel = inputStream.getChannel();
@@ -624,19 +638,113 @@ public class HomeFragment extends Fragment {
         return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffSet, declaredLength);
     }
 
+    private MappedByteBuffer loadAppleModelFile() throws IOException {
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("apple_model.tflite");
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffSet = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffSet, declaredLength);
+    }
 
-    public float doInference (float open, float high, float low, float price, float volume){
+    private MappedByteBuffer loadPzModelFile() throws IOException {
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("pz_model.tflite");
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffSet = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffSet, declaredLength);
+    }
+
+    private MappedByteBuffer loadTeslaModelFile() throws IOException {
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("tesla_model.tflite");
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffSet = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffSet, declaredLength);
+    }
+
+    private MappedByteBuffer loadWalmartModelFile() throws IOException {
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("walmart_model.tflite");
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffSet = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffSet, declaredLength);
+    }
+
+
+    private void openCompaniesTflites(){
+        try {
+            msTflite = new Interpreter(loadMicrosoftModelFile());
+            googleTflite = new Interpreter(loadGoogleModelFile());
+            appleTflite = new Interpreter(loadAppleModelFile());
+            gsTflite = new Interpreter(loadGoldmanModelFile());
+            pzTflite = new Interpreter(loadPzModelFile());
+            teslaTflite = new Interpreter(loadTeslaModelFile());
+            walmartTflite = new Interpreter(loadWalmartModelFile());
+            //Log.d(TAG, "Microsoft model file loaded");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+    public float doInference(float open, float high, float low, float price, float volume){
         float [][] inputVal = {{open, high, low, price, volume}};
 
         float [][] outputVal = new float[1][1];
-
-        tflite.run(inputVal, outputVal);
-
-        float inferredValue = outputVal[0][0];
-
+        float inferredValue = 0;
+        String companyName = "";
+        switch (spinnerPosition){
+            case 0:
+                msTflite.run(inputVal, outputVal);
+                 inferredValue = outputVal[0][0];
+                 companyName =  companyName(spinnerPosition);
+                Toast.makeText(mContext, companyName + " predicted price is " + String.valueOf(inferredValue), Toast.LENGTH_LONG).show();
+                break;
+            case 1:
+                googleTflite.run(inputVal, outputVal);
+                inferredValue = outputVal[0][0];
+                companyName =  companyName(spinnerPosition);
+                Toast.makeText(mContext, companyName + " predicted price is " + String.valueOf(inferredValue), Toast.LENGTH_LONG).show();
+                break;
+            case 2:
+                teslaTflite.run(inputVal, outputVal);
+                inferredValue = outputVal[0][0];
+                companyName =  companyName(spinnerPosition);
+                Toast.makeText(mContext, companyName + " predicted price is " + String.valueOf(inferredValue), Toast.LENGTH_LONG).show();
+                break;
+            case 3:
+                walmartTflite.run(inputVal, outputVal);
+                inferredValue = outputVal[0][0];
+                companyName =  companyName(spinnerPosition);
+                Toast.makeText(mContext, companyName + " predicted price is " + String.valueOf(inferredValue), Toast.LENGTH_LONG).show();
+                break;
+            case 4:
+                pzTflite.run(inputVal, outputVal);
+                inferredValue = outputVal[0][0];
+                companyName =  companyName(spinnerPosition);
+                Toast.makeText(mContext, companyName + " predicted price is " + String.valueOf(inferredValue), Toast.LENGTH_LONG).show();
+                break;
+            case 5:
+                appleTflite.run(inputVal, outputVal);
+                inferredValue = outputVal[0][0];
+                companyName =  companyName(spinnerPosition);
+                Toast.makeText(mContext, companyName + " predicted price is " + String.valueOf(inferredValue), Toast.LENGTH_LONG).show();
+                break;
+            case 6:
+                gsTflite.run(inputVal, outputVal);
+                inferredValue = outputVal[0][0];
+                companyName =  companyName(spinnerPosition);
+                Toast.makeText(mContext, companyName + " predicted price is " + String.valueOf(inferredValue), Toast.LENGTH_LONG).show();
+                break;
+                default:
+                    break;
+        }
 
         return inferredValue;
-
     }
 
     private void apiTimeSeriesCall(String symbol){
@@ -769,9 +877,7 @@ public class HomeFragment extends Fragment {
 
         Log.w(TAG, "Predicted price: " + String.valueOf(predictedPrice));
 
-       String companyName =  companyName(spinnerPosition);
 
-        Toast.makeText(mContext, companyName + " /predicted price is " + String.valueOf(predictedPrice), Toast.LENGTH_LONG).show();
 
     }
 
@@ -792,25 +898,25 @@ private String companyName(int spinnerPosition){
         String companyName = "";
         switch (spinnerPosition){
             case 0:
-                companyName = "Microsoft";
+                companyName = "MSFT";
                 break;
             case 1:
-                companyName = "Google";
+                companyName = "GOOGL";
                 break;
             case 2:
-                companyName = "Tesla";
+                companyName = "TSLA";
                 break;
             case 3:
-                companyName = "Wal-mart";
+                companyName = "WMT";
                 break;
             case 4:
-                companyName = "PZ - Industries";
+                companyName = "PZ";
                 break;
             case 5:
-                companyName = "Apple";
+                companyName = "AAPL";
                 break;
             case 6:
-                companyName = "Goldman Sachs";
+                companyName = "GS";
 
         }
         return companyName;
@@ -841,11 +947,21 @@ private void loadCompanyFromDatabase(){
             while (singleCursor.moveToNext()) {
 
                 openPriceText = singleCursor.getString(indexCompanyOpen);
+                openPrice = Double.parseDouble(openPriceText);
+
                 highPriceText = singleCursor.getString(indexCompanyHigh);
+                highPrice = Double.parseDouble(highPriceText);
+
                 lowPriceText = singleCursor.getString(indexCompanyLow);
+                lowPrice = Double.parseDouble(lowPriceText);
+
                 volumeText = singleCursor.getString(indexCompanyVolume);
+                volumeQuantity = Double.parseDouble(volumeText);
+
                 changePercentText = singleCursor.getString(indexCompanyChangePercent);
+
                 priceText = singleCursor.getString(indexCompanyPrice);
+                currentPrice = Double.parseDouble(priceText);
 
                 updateViews();
 
