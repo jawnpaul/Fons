@@ -108,7 +108,9 @@ public class HomeFragment extends Fragment {
 
     CompanyAdapter mCompanyAdapter;
 
-    private Cursor mCursor;
+    //private Cursor mCursor;
+
+    private Cursor singleCursor;
 
     private ViewPager mPager;
 
@@ -121,7 +123,6 @@ public class HomeFragment extends Fragment {
     ProgressBar mProgressBar;
 
     private double openPrice, highPrice, lowPrice, volumeQuantity, currentPrice;
-
     //private float openPriceNormalized, lowPriceNormalized, highPriceNormalized, currentPriceNormalized, volumeQuantityNormalized;
 
     TextView priceTextView, openPriceTextView, highPriceTextView,
@@ -169,8 +170,11 @@ public class HomeFragment extends Fragment {
         CompanyDbHelper dbHelper = new CompanyDbHelper(mContext);
         mSQLiteDatabase = dbHelper.getWritableDatabase();
 
-        mCursor = getSpecificCompany(spinnerPosition);
-        mCompanyAdapter = new CompanyAdapter(mContext, mCursor);
+        if(singleCursor!= null) singleCursor.close();
+        singleCursor = getSingleCompany(spinnerPosition);
+
+
+        //mCompanyAdapter = new CompanyAdapter(mContext, mCursor);
 
         String myjson = inputStreamToString(mContext.getResources().openRawResource(R.raw.my_json));
 
@@ -236,6 +240,14 @@ public class HomeFragment extends Fragment {
                 //Toast.makeText(getContext(), String.valueOf(doInference()), Toast.LENGTH_SHORT).show();
             }
         });
+
+        if (isOnline() &&  singleCursor.getCount() <= 0){
+            makeApiCall(MICROSOFT_SYMBOL);
+            mProgressBar = view.findViewById(R.id.news_progress_bar);
+        } else{
+
+            loadCompanyFromDatabase();
+        }
 
         return view;
 
@@ -321,11 +333,12 @@ public class HomeFragment extends Fragment {
         spinnerPosition = companySpinner.getSelectedItemPosition();
         switch (spinnerPosition){
             case 0:
-                makeApiCall(MICROSOFT_SYMBOL);
+                //makeApiCall(MICROSOFT_SYMBOL);
                 break;
             case 1:
-                makeApiCall(GOOGLE_SYMBOL);
-                //apiTimeSeriesCall(GOOGLE_SYMBOL);
+                singleCursor = getSingleCompany(spinnerPosition);
+                //makeApiCall(GOOGLE_SYMBOL);
+                apiTimeSeriesCall(GOOGLE_SYMBOL);
                 break;
             case 2:
                 makeApiCall(TESLA_SYMBOL);
@@ -544,8 +557,6 @@ public class HomeFragment extends Fragment {
             highPriceTextView.setText(highPriceText);
             lowPriceTextView.setText(lowPriceText);
             volumeTextView.setText(volumeText);
-
-
         }
 
 
@@ -571,7 +582,7 @@ public class HomeFragment extends Fragment {
             Log.d(TAG, uri.toString());
         }
 
-        mCompanyAdapter.swappCursor(mCursor);
+        //mCompanyAdapter.swappCursor(mCursor);
     }
 
     private void updateCompany(int spinnerPosition, String companySymbol, String companyOpen,
@@ -596,18 +607,12 @@ public class HomeFragment extends Fragment {
         //CompanyUpdateService.updateCompany(mContext, CompanyContract.getColumnLong(null, null));
     }
 
-    private Cursor getSpecificCompany(int spinnerPosition){
-       /* String id = "1";
-
-        Uri uri = CompanyContract.CONTENT_URI;
-        uri = uri.buildUpon().appendPath(id).build();*/
-
-        Log.d(TAG1, CompanyContract.buildSingleCompany(6).toString());
+    private Cursor getSingleCompany(int spinnerPosition){
         return mContext.getContentResolver().query(CompanyContract.buildSingleCompany(spinnerPosition + 1),
                 null,
                 null,
                 null,
-                CompanyContract.CompanyEntry._ID);
+                null);
     }
 
     private MappedByteBuffer loadModelFile() throws IOException {
@@ -647,7 +652,7 @@ public class HomeFragment extends Fragment {
 
         ApiInterface apiInterface = ApiClient.getStockTimeSeries().create(ApiInterface.class);
 
-        Call<TimeSeriesQuote> callToApi = apiInterface.getCompanyTimeSeries(TIME_SERIES_DAILY,symbol, "compact", API_KEY);
+        Call<TimeSeriesQuote> callToApi = apiInterface.getCompanyTimeSeries(TIME_SERIES_DAILY,symbol, OUTPUT_SIZE, API_KEY);
 
         callToApi.enqueue(new Callback<TimeSeriesQuote>() {
             @Override
@@ -810,6 +815,46 @@ private String companyName(int spinnerPosition){
         }
         return companyName;
 }
+
+private void loadCompanyFromDatabase(){
+    mCompanyAdapter = new CompanyAdapter(getActivity(), singleCursor);
+
+   retrieveParticularCompany(spinnerPosition + 1);
+}
+
+    private void retrieveParticularCompany(int position){
+        if(singleCursor!= null) singleCursor.close();
+        singleCursor = getSingleCompany(position);
+
+        int indexCompanyOpen = singleCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_OPEN);
+        int indexCompanyHigh = singleCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_HIGH);
+        int indexCompanyLow = singleCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_LOW);
+        int indexCompanyVolume = singleCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_VOLUME);
+        int indexCompanyPrice  = singleCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_PRICE);
+        int indexCompanyChangePercent  = singleCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE_PERCENT);
+
+
+
+
+        if (singleCursor != null) {
+
+            while (singleCursor.moveToNext()) {
+
+                openPriceText = singleCursor.getString(indexCompanyOpen);
+                highPriceText = singleCursor.getString(indexCompanyHigh);
+                lowPriceText = singleCursor.getString(indexCompanyLow);
+                volumeText = singleCursor.getString(indexCompanyVolume);
+                changePercentText = singleCursor.getString(indexCompanyChangePercent);
+                priceText = singleCursor.getString(indexCompanyPrice);
+
+                updateViews();
+
+            }
+        } else {
+
+            // Insert code here to report an error if the cursor is null or the provider threw an exception.
+        }
+    }
 
 
 
