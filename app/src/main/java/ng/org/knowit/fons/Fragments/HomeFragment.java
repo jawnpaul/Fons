@@ -621,7 +621,7 @@ public class HomeFragment extends Fragment {
     }
 
     private MappedByteBuffer loadGoogleModelFile() throws IOException {
-        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("google_model.tflite");
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("GOOGLmodel.tflite");
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel = inputStream.getChannel();
         long startOffSet = fileDescriptor.getStartOffset();
@@ -630,7 +630,7 @@ public class HomeFragment extends Fragment {
     }
 
     private MappedByteBuffer loadMicrosoftModelFile() throws IOException {
-        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("model.tflite");
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("MSFTmodel.tflite");
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel = inputStream.getChannel();
         long startOffSet = fileDescriptor.getStartOffset();
@@ -639,7 +639,7 @@ public class HomeFragment extends Fragment {
     }
 
     private MappedByteBuffer loadAppleModelFile() throws IOException {
-        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("apple_model.tflite");
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("AAPLmodel.tflite");
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel = inputStream.getChannel();
         long startOffSet = fileDescriptor.getStartOffset();
@@ -648,7 +648,7 @@ public class HomeFragment extends Fragment {
     }
 
     private MappedByteBuffer loadPzModelFile() throws IOException {
-        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("pz_model.tflite");
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("PZmodel.tflite");
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel = inputStream.getChannel();
         long startOffSet = fileDescriptor.getStartOffset();
@@ -657,7 +657,7 @@ public class HomeFragment extends Fragment {
     }
 
     private MappedByteBuffer loadTeslaModelFile() throws IOException {
-        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("tesla_model.tflite");
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("TSLAmodel.tflite");
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel = inputStream.getChannel();
         long startOffSet = fileDescriptor.getStartOffset();
@@ -666,7 +666,7 @@ public class HomeFragment extends Fragment {
     }
 
     private MappedByteBuffer loadWalmartModelFile() throws IOException {
-        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("walmart_model.tflite");
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("WMTmodel.tflite");
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel = inputStream.getChannel();
         long startOffSet = fileDescriptor.getStartOffset();
