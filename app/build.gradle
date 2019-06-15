@@ -41,4 +41,7 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
     annotationProcessor 'androidx.annotation:annotation:1.0.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+
+    //App Intro Library for on boarding
+    implementation 'com.github.AppIntro:AppIntro:5.1.0'
 }

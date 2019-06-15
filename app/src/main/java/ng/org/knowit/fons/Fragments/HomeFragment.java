@@ -329,7 +329,7 @@ public class HomeFragment extends Fragment {
         spinnerPosition = companySpinner.getSelectedItemPosition();
         switch (spinnerPosition){
             case 0:
-                //makeApiCall(MICROSOFT_SYMBOL);
+                makeApiCall(MICROSOFT_SYMBOL);
                 break;
             case 1:
                 //singleCursor = getSingleCompany(spinnerPosition);

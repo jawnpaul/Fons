@@ -137,7 +137,7 @@ public class OneDayFragment extends Fragment {
 
         mTextView = view.findViewById(R.id.textViewPageTitle);
         mTextView.setText(mParam1);
-        //createGraph(dataList);
+        createGraph(dataList);
         //lineChart.invalidate();
 
     }
@@ -155,12 +155,12 @@ public class OneDayFragment extends Fragment {
 
     }
 
-    public static void createGraph(ArrayList<JsonElement> dataListt){
+    public  void createGraph(ArrayList<JsonElement> dataListt){
 
 
         ArrayList<Entry> entriess = new ArrayList<Entry>();
 
-        /*String myjson = myjson;
+
 
 
 
@@ -168,7 +168,6 @@ public class OneDayFragment extends Fragment {
 
         dataListt = myModel.parseValues(myModel.getResults());
         Log.w(TAG, "size from local json "+String.valueOf(dataListt.size()));
-*/
 
 
         for (float i =0; i <dataListt.size();i++) {
@@ -180,8 +179,8 @@ public class OneDayFragment extends Fragment {
 
         LineDataSet dataSet = new LineDataSet(entriess, "prices"); // add entries to dataset
         //dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
-        dataSet.setColor(0x000000);
-        dataSet.setValueTextColor(0x000000);
+        dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
+        dataSet.setValueTextColor(getResources().getColor(R.color.colorPrimaryDark));
         //dataSet.setValueTextColor(getResources().getColor(R.color.colorPrimaryDark));
         LineData lineData = new LineData(dataSet);
         lineChart.setData(lineData);
