@@ -463,7 +463,7 @@ public class HomeFragment extends Fragment {
             displayMessage(title, message);
             }
 
-        mProgressBar.setVisibility(View.VISIBLE);
+       // mProgressBar.setVisibility(View.VISIBLE);
 
             ApiInterface apiInterface = ApiClient.getStockClient().create(ApiInterface.class);
 
@@ -475,7 +475,7 @@ public class HomeFragment extends Fragment {
                     GlobalQuote globalQuote = response.body();
 
 
-                    mProgressBar.setVisibility(View.INVISIBLE);
+//                    mProgressBar.setVisibility(View.INVISIBLE);
 
                     if (globalQuote == null) {
 
@@ -973,7 +973,7 @@ private void loadCompanyFromDatabase(){
     }
 
 
-
+//TODO:There is a dangling progress bar bug
 
     /*public void setAllItems(ArrayList<JsonElement> allItems) {
         HomeFragment.allItems = myModel.parseValues(myModel.getResults());
