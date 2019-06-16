@@ -73,6 +73,7 @@
                 app:fontFamily="@font/roboto" />
 
             <TextView
+                app:fontFamily="@font/roboto"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
                 android:id="@+id/newsDetailAuthor"
@@ -93,6 +94,7 @@
                 android:text="Hurricane Michael has made landfall near Mexico Beach, Florida. The storm picked up steam as it sped across the Gulf of Mexico towards the Florida Panhandle. When its eye hit Florida's Gulf Coast on Wednesday afternoon, the storm had sustained winds of 155 mp… [+1551 chars]"
                 android:textAllCaps="false"
                 android:textColor="#757575"
+                app:fontFamily="@font/roboto"
                 android:textSize="18sp" />
 
         </LinearLayout>
