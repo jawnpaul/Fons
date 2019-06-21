@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.material.chip.Chip;
+
 import ng.org.knowit.fons.Data.CompanyContract;
 import ng.org.knowit.fons.R;
 
@@ -43,6 +45,8 @@ public class AllCompanyAdapter extends RecyclerView.Adapter<AllCompanyAdapter.Al
         String volume = mCursor.getString(mCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_VOLUME));
         String changePercent = mCursor.getString(mCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE_PERCENT));
 
+        String companySymbol = mCursor.getString(
+                mCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_SYMBOL));
 
 
         holder.priceTextView.setText(currentPrice);
@@ -56,9 +60,7 @@ public class AllCompanyAdapter extends RecyclerView.Adapter<AllCompanyAdapter.Al
         holder.lowPriceTextView.setText(lowPrice);
         holder.volumeTextView.setText(volume);
         holder.openPriceTextView.setText(openPrice);
-
-
-
+        holder.itemChip.setText(companySymbol);
 
     }
 
@@ -86,6 +88,8 @@ public class AllCompanyAdapter extends RecyclerView.Adapter<AllCompanyAdapter.Al
         final TextView priceTextView, openPriceTextView, highPriceTextView,
         lowPriceTextView, volumeTextView, changePercentTextView;
 
+        final Chip itemChip;
+
         public AllCompanyDatabaseViewHolder(View itemView) {
             super(itemView);
             priceTextView = itemView.findViewById(R.id.textViewStockPrice);
@@ -94,6 +98,8 @@ public class AllCompanyAdapter extends RecyclerView.Adapter<AllCompanyAdapter.Al
             lowPriceTextView = itemView.findViewById(R.id.textViewLowPrice);
             volumeTextView = itemView.findViewById(R.id.textViewVolumeQuantity);
             changePercentTextView = itemView.findViewById(R.id.textViewPercentage);
+
+            itemChip = itemView.findViewById(R.id.companyItemChip);
         }
     }
 }

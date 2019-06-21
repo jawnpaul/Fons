@@ -131,6 +131,20 @@
                             android:textStyle="bold"
                             tools:targetApi="lollipop" />
 
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/companyChip"
+                            style="@style/Widget.MaterialComponents.Chip.Filter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_margin="8dp"
+                            android:layout_marginEnd="4dp"
+                            android:layout_marginRight="4dp"
+                            android:text="@string/open"
+                            android:textColor="@android:color/white"
+                            card_view:chipBackgroundColor="@color/colorAccent" />
+
                         <TextView
                             android:id="@+id/textViewPercentage"
                             android:layout_width="wrap_content"

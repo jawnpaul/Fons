@@ -34,7 +34,12 @@
                     tools:targetApi="lollipop" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chip"
+                    android:id="@+id/companyItemChip"
+                    android:layout_margin="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginRight="4dp"
+                    android:textColor="@android:color/white"
+                    card_view:chipBackgroundColor="@color/colorAccent"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

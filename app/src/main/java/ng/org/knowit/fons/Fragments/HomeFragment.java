@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -131,6 +132,8 @@ public class HomeFragment extends Fragment {
     latestTradingDayText, previousDayCloseText, changeText;
 
 
+    Chip companyChip;
+
     //private OnFragmentInteractionListener mListener;
 
     public HomeFragment() {
@@ -208,7 +211,11 @@ public class HomeFragment extends Fragment {
 
         mProgressBar = view.findViewById(R.id.home_progress_bar);
 
+        companyChip = view.findViewById(R.id.companyChip);
+
         spinnerPosition = companySpinner.getSelectedItemPosition();
+
+        companyChip.setText(companyName(spinnerPosition));
 
         ArrayAdapter<String> companyNamesAdapter = new ArrayAdapter<String>(getActivity(),  android.R.layout.simple_spinner_item, companyNames);
         companyNamesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -553,6 +560,7 @@ public class HomeFragment extends Fragment {
             highPriceTextView.setText(highPriceText);
             lowPriceTextView.setText(lowPriceText);
             volumeTextView.setText(volumeText);
+            companyChip.setText(companyName(spinnerPosition));
         }
 
 
@@ -938,7 +946,8 @@ private void loadCompanyFromDatabase(){
         int indexCompanyVolume = singleCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_VOLUME);
         int indexCompanyPrice  = singleCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_PRICE);
         int indexCompanyChangePercent  = singleCursor.getColumnIndex(CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE_PERCENT);
-
+        int indexCompanyName = singleCursor.getColumnIndex(
+                CompanyContract.CompanyEntry.COLUMN_COMPANY_SYMBOL);
 
 
 
@@ -962,6 +971,9 @@ private void loadCompanyFromDatabase(){
 
                 priceText = singleCursor.getString(indexCompanyPrice);
                 currentPrice = Double.parseDouble(priceText);
+
+                symbolText = singleCursor.getString(indexCompanyName);
+
 
                 updateViews();
 
