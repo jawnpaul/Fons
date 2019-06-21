@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -25,19 +26,13 @@ public class MainActivity extends AppCompatActivity {
     TextView showResult;
     String TAG = "MainActivity";
 
+    Handler mHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        doInference = findViewById(R.id.button_do_inference);
-        doInference.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Main2Activity.class);
-                startActivity(intent);
-            }
-        });
 
         //  Declare a new thread to do a preference check
         Thread t = new Thread(new Runnable() {
@@ -77,6 +72,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Start the thread
         t.start();
+
+
+        mHandler =new Handler();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent=new Intent(MainActivity.this,Main2Activity.class);
+                startActivity(intent);
+                finish();
+            }
+        },3000);
+
 
 
     }
