@@ -30,18 +30,62 @@ public class IntroActivity extends AppIntro {
         // Just create a `SliderPage` and provide title, description, background and image.
         // AppIntro will do the rest.
         SliderPage sliderPage = new SliderPage();
-        sliderPage.setTitle("I don't know which title");
-        sliderPage.setDescription("In here goes the description of the whatever");
+        sliderPage.setTitle("Quick Intro");
+        sliderPage.setDescription("A quick introduction of the app amazing features");
         sliderPage.setImageDrawable(R.drawable.app_installation);
         sliderPage.setBgColor(Color.parseColor("#1976D2"));
         addSlide(AppIntroFragment.newInstance(sliderPage));
 
         SliderPage sliderPage2 = new SliderPage();
-        sliderPage2.setTitle("I don't know which title");
-        sliderPage2.setDescription("In here goes the description of the error mango");
-        sliderPage2.setImageDrawable(R.drawable.error);
+        sliderPage2.setTitle("Predicting");
+        sliderPage2.setDescription("Predict the stock prices of your favourite company");
+        sliderPage2.setImageDrawable(R.drawable.ic_undraw_predictive_analytic);
         sliderPage2.setBgColor(Color.parseColor("#1976D2"));
         addSlide(AppIntroFragment.newInstance(sliderPage2));
+
+
+        SliderPage sliderPage3 = new SliderPage();
+        sliderPage3.setTitle("Trending");
+        sliderPage3.setDescription("Get valuable insight into how companies are performing");
+        sliderPage3.setImageDrawable(R.drawable.ic_undraw_investing);
+        sliderPage3.setBgColor(Color.parseColor("#1976D2"));
+        addSlide(AppIntroFragment.newInstance(sliderPage3));
+
+        SliderPage sliderPage4 = new SliderPage();
+        sliderPage4.setTitle("Graph");
+        sliderPage4.setDescription("Real time graph showing movement of prices");
+        sliderPage4.setImageDrawable(R.drawable.ic_undraw_financial_data);
+        sliderPage4.setBgColor(Color.parseColor("#1976D2"));
+        addSlide(AppIntroFragment.newInstance(sliderPage4));
+
+        SliderPage sliderPage5 = new SliderPage();
+        sliderPage5.setTitle("News");
+        sliderPage5.setDescription("Up-to-date financial news");
+        sliderPage5.setImageDrawable(R.drawable.ic_undraw_news);
+        sliderPage5.setBgColor(Color.parseColor("#1976D2"));
+        addSlide(AppIntroFragment.newInstance(sliderPage5));
+
+
+        SliderPage sliderPage6 = new SliderPage();
+        sliderPage6.setTitle("Share news");
+        sliderPage6.setDescription("Enhance the spread of information through sharing");
+        sliderPage6.setImageDrawable(R.drawable.ic_undraw_social_share);
+        sliderPage6.setBgColor(Color.parseColor("#1976D2"));
+        addSlide(AppIntroFragment.newInstance(sliderPage6));
+
+        SliderPage sliderPage7 = new SliderPage();
+        sliderPage7.setTitle("Yaay!!");
+        sliderPage7.setDescription("That's it, you can start using. Enjoy!");
+        sliderPage7.setImageDrawable(R.drawable.ic_undraw_finish_line);
+        sliderPage7.setBgColor(Color.parseColor("#1976D2"));
+        addSlide(AppIntroFragment.newInstance(sliderPage7));
+
+        /*SliderPage sliderPage8 = new SliderPage();
+        sliderPage8.setTitle("I don't know which title");
+        sliderPage8.setDescription("In here goes the description of the error mango");
+        sliderPage8.setImageDrawable(R.drawable.error);
+        sliderPage8.setBgColor(Color.parseColor("#1976D2"));
+        addSlide(AppIntroFragment.newInstance(sliderPage8));*/
 
         // OPTIONAL METHODS
         // Override bar/separator color.
