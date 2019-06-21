@@ -11,6 +11,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.chip.Chip;
@@ -123,6 +128,10 @@ public class HomeFragment extends Fragment {
 
     ProgressBar mProgressBar;
 
+    LineChart graphLineChart;
+    private TimeSeriesQuote myModel;
+    private String myjson;
+
     private double openPrice, highPrice, lowPrice, volumeQuantity, currentPrice;
     //private float openPriceNormalized, lowPriceNormalized, highPriceNormalized, currentPriceNormalized, volumeQuantityNormalized;
 
@@ -130,7 +139,7 @@ public class HomeFragment extends Fragment {
             lowPriceTextView, volumeTextView, changePercentTextView;
     String priceText, openPriceText, highPriceText, lowPriceText, volumeText, changePercentText, symbolText,
     latestTradingDayText, previousDayCloseText, changeText;
-
+    private ArrayList<JsonElement> dataList;
 
     Chip companyChip;
 
@@ -200,6 +209,11 @@ public class HomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+
+        myModel = new Gson().fromJson(myjson, TimeSeriesQuote.class);
+        myjson = inputStreamToString(getContext().getResources().openRawResource(R.raw.my_json));
+
+
         priceTextView = view.findViewById(R.id.textViewStockPrice);
         changePercentTextView = view.findViewById(R.id.textViewPercentage);
         openPriceTextView = view.findViewById(R.id.textViewOpenPrice);
@@ -266,14 +280,15 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         toolbar = view.findViewById(R.id.toolbar);
+        graphLineChart = view.findViewById(R.id.graphLineChart);
 
-        mPager = view.findViewById(R.id.vpPager);
+        /*mPager = view.findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
-        mPager.setAdapter(adapterViewPager);
+        mPager.setAdapter(adapterViewPager);*/
         //insertNestedFragment();
 
 
-        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+       /* mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset,
                     int positionOffsetPixels) {
@@ -282,8 +297,8 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-               /* Toast.makeText(getContext(),
-                        "Selected page position: " + position, Toast.LENGTH_SHORT).show();*/
+               *//* Toast.makeText(getContext(),
+                        "Selected page position: " + position, Toast.LENGTH_SHORT).show();*//*
 
             }
 
@@ -291,12 +306,12 @@ public class HomeFragment extends Fragment {
             public void onPageScrollStateChanged(int state) {
 
             }
-        });
+        });*/
 
 
         final CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
 
-        final PagerTabStrip pagerTabStrip = view.findViewById(R.id.pager_header);
+        //final PagerTabStrip pagerTabStrip = view.findViewById(R.id.pager_header);
 
         AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -312,17 +327,21 @@ public class HomeFragment extends Fragment {
                 //Check if the view is collapsed
                 if (scrollRange + verticalOffset == 0) {
                     collapsingToolbarLayout.setTitle(" ");
-                    pagerTabStrip.setVisibility(View.INVISIBLE);
-                    mPager.setVisibility(View.INVISIBLE);
+                    graphLineChart.setVisibility(View.INVISIBLE);
+                   /* pagerTabStrip.setVisibility(View.INVISIBLE);
+                    mPager.setVisibility(View.INVISIBLE);*/
 
                 } else {
                     collapsingToolbarLayout.setTitle(" ");
-                    pagerTabStrip.setVisibility(View.VISIBLE);
-                    mPager.setVisibility(View.VISIBLE);
+                    graphLineChart.setVisibility(View.VISIBLE);
+                   /* pagerTabStrip.setVisibility(View.VISIBLE);
+                    mPager.setVisibility(View.VISIBLE);*/
                 }
 
             }
         });
+
+        //createGraph(dataList);
     }
 
     private void insertNestedFragment() {
@@ -794,6 +813,8 @@ public class HomeFragment extends Fragment {
                     ArrayList<JsonElement> individualItems =  timeSeriesQuote.parseValues(timeSeriesQuote.getResults());
 
                     getStockTimeSeries(individualItems);
+
+                    createGraph(individualItems);
                 }
             }
 
@@ -982,6 +1003,33 @@ private void loadCompanyFromDatabase(){
 
             // Insert code here to report an error if the cursor is null or the provider threw an exception.
         }
+    }
+
+    public void createGraph(ArrayList<JsonElement> dataListt) {
+        ArrayList<Entry> entriess = new ArrayList<Entry>();
+        //TimeSeriesQuote myModel = new Gson().fromJson(myjson, TimeSeriesQuote.class);
+
+        //dataListt = myModel.parseValues(myModel.getResults());
+        Log.w(TAG, "size from online json " + String.valueOf(dataListt.size()));
+
+        for (float i = 0; i < dataListt.size(); i++) {
+            JsonElement data = dataListt.get((int) i);
+            entriess.add(new Entry(i,
+                    Float.parseFloat(data.getAsJsonObject().get("4. close").getAsString())));
+        }
+
+        Log.w(TAG, "Entries is " + entriess.size());
+
+        LineDataSet dataSet = new LineDataSet(entriess, "prices"); // add entries to dataset
+        Log.w(TAG, "Dataset is " + dataSet.getEntryCount());
+
+        dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
+        dataSet.setValueTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        //dataSet.setValueTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        LineData lineData = new LineData(dataSet);
+        Log.w(TAG, "lineData is " + lineData.getDataSetCount());
+        graphLineChart.setData(lineData);
+        graphLineChart.invalidate();
     }
 
 

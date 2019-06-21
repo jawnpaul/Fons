@@ -98,8 +98,7 @@ public class OneDayFragment extends Fragment {
             mParam2 = getArguments().getInt(ARG_PARAM2);
 
 
-             myModel = new Gson().fromJson(myjson, TimeSeriesQuote.class);
-
+            myModel = new Gson().fromJson(myjson, TimeSeriesQuote.class);
             myjson = inputStreamToString(getContext().getResources().openRawResource(R.raw.my_json));
 
 
@@ -156,26 +155,16 @@ public class OneDayFragment extends Fragment {
     }
 
     public  void createGraph(ArrayList<JsonElement> dataListt){
-
-
         ArrayList<Entry> entriess = new ArrayList<Entry>();
-
-
-
-
-
         TimeSeriesQuote myModel = new Gson().fromJson(myjson, TimeSeriesQuote.class);
 
         dataListt = myModel.parseValues(myModel.getResults());
         Log.w(TAG, "size from local json "+String.valueOf(dataListt.size()));
 
-
         for (float i =0; i <dataListt.size();i++) {
             JsonElement data = dataListt.get((int) i);
             entriess.add(new Entry(i, Float.parseFloat(data.getAsJsonObject().get("4. close").getAsString())));
         }
-
-
 
         LineDataSet dataSet = new LineDataSet(entriess, "prices"); // add entries to dataset
         //dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
