@@ -21,8 +21,7 @@ import ng.org.knowit.fons.Fragments.NewsFragment;
 import ng.org.knowit.fons.Fragments.TrendingFragment;
 
 public class Main2Activity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-        BottomNavigationView.OnNavigationItemSelectedListener
+        implements BottomNavigationView.OnNavigationItemSelectedListener
 {
 
     private static final String TAG = Main2Activity.class.getSimpleName();
@@ -62,7 +61,7 @@ public class Main2Activity extends AppCompatActivity
         navigation.setOnNavigationItemSelectedListener(this);
     }
 
-    @Override
+    /*@Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -70,7 +69,7 @@ public class Main2Activity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -100,7 +99,7 @@ public class Main2Activity extends AppCompatActivity
 
         Fragment fragment = null;
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        /*int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
@@ -114,7 +113,7 @@ public class Main2Activity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
-        }
+        }*/
 
 
         switch (item.getItemId()) {
@@ -140,8 +139,8 @@ public class Main2Activity extends AppCompatActivity
                 break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+       /* DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);*/
         return true;
     }
 
@@ -158,20 +157,18 @@ public class Main2Activity extends AppCompatActivity
     }
 
     public void setToolbar(Toolbar toolbar) {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        //DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if(toolbar != null) {
             setSupportActionBar(toolbar);
 
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+            /*ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.setDrawerListener(toggle);
-            toggle.syncState();
+            toggle.syncState();*/
         } else {
-             drawer.setDrawerListener(null);
+            //drawer.setDrawerListener(null);
         }
     }
 
-
-// TODO: Load model.tflite file in background possibly async task to reduce work on main thread
 
 }

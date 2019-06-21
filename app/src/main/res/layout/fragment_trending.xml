@@ -18,8 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
-            app:contentInsetStart="72dp"
-            app:navigationIcon="@drawable/ic_menu"
+            app:contentInsetStart="30dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
 

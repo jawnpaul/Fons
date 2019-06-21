@@ -206,6 +206,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
                     } else {
                         errorTitle = "Error";
                         errorMessage = "No data Received.";
+
                     }
                     displayMessage(errorTitle, errorMessage);
                 } else {
@@ -230,6 +231,8 @@ public class NewsFragment extends Fragment implements NewsAdapter.OnListItemClic
                 String errorTitle = "Error";
                 String errorMessage = "Data request failed.";
                 displayMessage(errorTitle, errorMessage);
+                mProgressBar.setVisibility(View.INVISIBLE);
+                //TODO: Set a refresh button
             }
         });
 
