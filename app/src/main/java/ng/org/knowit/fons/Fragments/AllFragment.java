@@ -151,7 +151,7 @@ public class AllFragment extends Fragment {
                 null,
                 null,
                 null,
-                CompanyContract.CompanyEntry.COLUMN_TIMESTAMP); }
+                CompanyContract.CompanyEntry.COLUMN_TIMESTAMP+" DESC"); }
 
     // TODO: Rename method, update argument and hook method into UI event
     /*public void onButtonPressed(Uri uri) {

@@ -21,10 +21,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.PagerTabStrip;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -48,6 +45,7 @@ import java.io.InputStream;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.tensorflow.lite.Interpreter;
 
@@ -141,6 +139,8 @@ public class HomeFragment extends Fragment {
     latestTradingDayText, previousDayCloseText, changeText;
     private ArrayList<JsonElement> dataList;
 
+    ArrayList<JsonElement> individualItems;
+
     Chip companyChip;
 
     //private OnFragmentInteractionListener mListener;
@@ -223,8 +223,6 @@ public class HomeFragment extends Fragment {
 
         companySpinner = view.findViewById(R.id.spinner_toolbar);
 
-        mProgressBar = view.findViewById(R.id.home_progress_bar);
-
         companyChip = view.findViewById(R.id.companyChip);
 
         spinnerPosition = companySpinner.getSelectedItemPosition();
@@ -254,13 +252,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 apiTimeSeriesCall(companyName(spinnerPosition));
-                //Toast.makeText(getContext(), String.valueOf(doInference()), Toast.LENGTH_SHORT).show();
+                getStockTimeSeriesForPrediction(individualItems);
             }
         });
 
         if (isOnline() &&  singleCursor.getCount() <= 0){
             makeApiCall(MICROSOFT_SYMBOL);
-            mProgressBar = view.findViewById(R.id.news_progress_bar);
+            apiTimeSeriesCall(MICROSOFT_SYMBOL);
         } else{
 
             loadCompanyFromDatabase();
@@ -281,37 +279,9 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         toolbar = view.findViewById(R.id.toolbar);
         graphLineChart = view.findViewById(R.id.graphLineChart);
-
-        /*mPager = view.findViewById(R.id.vpPager);
-        adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
-        mPager.setAdapter(adapterViewPager);*/
-        //insertNestedFragment();
-
-
-       /* mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset,
-                    int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-               *//* Toast.makeText(getContext(),
-                        "Selected page position: " + position, Toast.LENGTH_SHORT).show();*//*
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });*/
-
+        mProgressBar = view.findViewById(R.id.home_progress_bar);
 
         final CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar_layout);
-
-        //final PagerTabStrip pagerTabStrip = view.findViewById(R.id.pager_header);
 
         AppBarLayout appBarLayout = view.findViewById(R.id.app_bar_layout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -328,27 +298,15 @@ public class HomeFragment extends Fragment {
                 if (scrollRange + verticalOffset == 0) {
                     collapsingToolbarLayout.setTitle(" ");
                     graphLineChart.setVisibility(View.INVISIBLE);
-                   /* pagerTabStrip.setVisibility(View.INVISIBLE);
-                    mPager.setVisibility(View.INVISIBLE);*/
+
 
                 } else {
                     collapsingToolbarLayout.setTitle(" ");
                     graphLineChart.setVisibility(View.VISIBLE);
-                   /* pagerTabStrip.setVisibility(View.VISIBLE);
-                    mPager.setVisibility(View.VISIBLE);*/
                 }
 
             }
         });
-
-        //createGraph(dataList);
-    }
-
-    private void insertNestedFragment() {
-        OneDayFragment childFragment = new OneDayFragment();
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        //loadFragment(childFragment);
-        transaction.replace(R.id.frag, childFragment).commit();
     }
 
     private void selectedSpinner(){
@@ -356,94 +314,37 @@ public class HomeFragment extends Fragment {
         switch (spinnerPosition){
             case 0:
                 makeApiCall(MICROSOFT_SYMBOL);
+                apiTimeSeriesCall(MICROSOFT_SYMBOL);
                 break;
             case 1:
                 //singleCursor = getSingleCompany(spinnerPosition);
                 makeApiCall(GOOGLE_SYMBOL);
-                //apiTimeSeriesCall(GOOGLE_SYMBOL);
+                apiTimeSeriesCall(GOOGLE_SYMBOL);
                 break;
             case 2:
                 makeApiCall(TESLA_SYMBOL);
-                //apiTimeSeriesCall(TESLA_SYMBOL);
+                apiTimeSeriesCall(TESLA_SYMBOL);
                 break;
             case 3:
                 makeApiCall(WALMART_SYMBOL);
-                //apiTimeSeriesCall(WALMART_SYMBOL);
+                apiTimeSeriesCall(WALMART_SYMBOL);
                 break;
             case 4:
                 makeApiCall(PZ_SYMBOL);
-                //apiTimeSeriesCall(PZ_SYMBOL);
+                apiTimeSeriesCall(PZ_SYMBOL);
                 break;
             case 5:
                 makeApiCall(APPLE_SYMBOL);
-               // apiTimeSeriesCall(APPLE_SYMBOL);
+                apiTimeSeriesCall(APPLE_SYMBOL);
                 break;
             case 6:
                 makeApiCall(GOLDMAN_SYMBOL);
-                //apiTimeSeriesCall(GOLDMAN_SYMBOL);
+                apiTimeSeriesCall(GOLDMAN_SYMBOL);
                 break;
 
                 default:
                     break;
         }
-    }
-
-    public static class MyPagerAdapter extends FragmentPagerAdapter {
-        private static int NUM_ITEMS = 1;
-
-        public MyPagerAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        // Returns total number of pages
-        @Override
-        public int getCount() {
-            return NUM_ITEMS;
-        }
-
-        // Returns the fragment to display for that page
-        @Override
-        public Fragment getItem(int position) {
-            OneDayFragment oneDayFragment = new OneDayFragment();
-            switch (position) {
-                case 0: // Fragment # 0 - This will show FirstFragment
-
-                    oneDayFragment = OneDayFragment.newInstance("Page zero",0);
-                    Bundle f_bundle = oneDayFragment.getArguments();
-                    String f_param1 = f_bundle.getString("param1");
-                    break;
-                /*case 1: // Fragment # 0 - This will show FirstFragment different title
-                    oneDayFragment = OneDayFragment.newInstance("Page one",1);
-
-                    break;
-
-                case 2: // Fragment # 1 - This will show SecondFragment
-
-                    oneDayFragment = OneDayFragment.newInstance("Page Two", 2);
-
-                    break;
-                case 3:
-                    oneDayFragment = OneDayFragment.newInstance("Page Three", 3);
-                    break;
-                    //return OneDayFragment.newInstance("page two", 2);
-                case 4:
-                    oneDayFragment = OneDayFragment.newInstance("Page Four", 4);
-                    break;*/
-                default:
-                   // Log.d("Home Fragment", "Which one? fragment has loaded");
-            }
-            return oneDayFragment;
-        }
-
-        // Returns the page title for the top indicator
-        @Override
-        public CharSequence getPageTitle(int position) {
-
-            //Write a switch statement here to show each tab title for specific tab I want
-
-            return "Page " + position;
-        }
-
     }
 
     private boolean loadFragment(OneDayFragment fragment) {
@@ -489,7 +390,7 @@ public class HomeFragment extends Fragment {
             displayMessage(title, message);
             }
 
-       // mProgressBar.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
 
             ApiInterface apiInterface = ApiClient.getStockClient().create(ApiInterface.class);
 
@@ -501,7 +402,7 @@ public class HomeFragment extends Fragment {
                     GlobalQuote globalQuote = response.body();
 
 
-//                    mProgressBar.setVisibility(View.INVISIBLE);
+                    mProgressBar.setVisibility(View.INVISIBLE);
 
                     if (globalQuote == null) {
 
@@ -546,8 +447,6 @@ public class HomeFragment extends Fragment {
                         addNewCompany(symbolText, openPriceText, highPriceText, lowPriceText,
                                 priceText, volumeText, latestTradingDayText, previousDayCloseText, changeText, changePercentText);
 
-
-                        //Toast.makeText(getActivity(), "Open price is "+ globalQuote.getCompanyQuote().getOpenPrice(), Toast.LENGTH_LONG).show();
 
                         }
                     }
@@ -810,11 +709,11 @@ public class HomeFragment extends Fragment {
                     }
                     displayMessage(errorTitle, errorMessage);
                 } else {
-                    ArrayList<JsonElement> individualItems =  timeSeriesQuote.parseValues(timeSeriesQuote.getResults());
-
-                    getStockTimeSeries(individualItems);
-
+                    individualItems =  timeSeriesQuote.parseValues(timeSeriesQuote.getResults());
                     createGraph(individualItems);
+                    //getStockTimeSeriesForPrediction(individualItems);
+
+
                 }
             }
 
@@ -829,7 +728,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void getStockTimeSeries(ArrayList<JsonElement> individualItems){
+    private void getStockTimeSeriesForPrediction(ArrayList<JsonElement> individualItems){
         ArrayList<Double> openList = new ArrayList<>();
         ArrayList<Double> highList = new ArrayList<>();
         ArrayList<Double> lowList = new ArrayList<>();
@@ -1006,10 +905,9 @@ private void loadCompanyFromDatabase(){
     }
 
     public void createGraph(ArrayList<JsonElement> dataListt) {
+        //This reverses the dataList, so that the graph can move from left to right
+        Collections.reverse(dataListt);
         ArrayList<Entry> entriess = new ArrayList<Entry>();
-        //TimeSeriesQuote myModel = new Gson().fromJson(myjson, TimeSeriesQuote.class);
-
-        //dataListt = myModel.parseValues(myModel.getResults());
         Log.w(TAG, "size from online json " + String.valueOf(dataListt.size()));
 
         for (float i = 0; i < dataListt.size(); i++) {
@@ -1018,16 +916,11 @@ private void loadCompanyFromDatabase(){
                     Float.parseFloat(data.getAsJsonObject().get("4. close").getAsString())));
         }
 
-        Log.w(TAG, "Entries is " + entriess.size());
-
         LineDataSet dataSet = new LineDataSet(entriess, "prices"); // add entries to dataset
-        Log.w(TAG, "Dataset is " + dataSet.getEntryCount());
 
-        dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
-        dataSet.setValueTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        //dataSet.setValueTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        dataSet.setColor(getResources().getColor(R.color.colorBlack));
+        dataSet.setValueTextColor(getResources().getColor(R.color.colorBlack));
         LineData lineData = new LineData(dataSet);
-        Log.w(TAG, "lineData is " + lineData.getDataSetCount());
         graphLineChart.setData(lineData);
         graphLineChart.invalidate();
     }

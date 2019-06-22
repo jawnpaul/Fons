@@ -133,7 +133,7 @@ public class TrendingFragment extends Fragment {
                 null,
                 null,
                 null,
-                CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE_PERCENT);
+                CompanyContract.CompanyEntry.COLUMN_COMPANY_CHANGE_PERCENT +" DESC");
     }
 
 
